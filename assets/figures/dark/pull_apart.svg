@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="130" height="100" viewBox="0 0 130 100">
+<path fill-rule="evenodd" fill="none" fill-opacity="1" d="M 6 100 L 124 100 C 127.316406 100 130 97.316406 130 94 L 130 6 C 130 2.683594 127.316406 0 124 0 L 6 0 C 2.683594 0 0 2.683594 0 6 L 0 94 C 0 97.316406 2.683594 100 6 100 Z M 6 100 "/>
+<path fill="none" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" stroke="#55534F" stroke-opacity="1" stroke-miterlimit="10" d="M 4 4 L 126 4 " transform="matrix(1, 0, 0, -1, 0, 100)"/>
+<path fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" stroke="#EDEBE6" stroke-opacity="1" stroke-miterlimit="10" d="M 71.5 82 C 71.5 85.589844 68.589844 88.5 65 88.5 C 61.410156 88.5 58.5 85.589844 58.5 82 C 58.5 78.410156 61.410156 75.5 65 75.5 C 68.589844 75.5 71.5 78.410156 71.5 82 " transform="matrix(1, 0, 0, -1, 0, 100)"/>
+<path fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" stroke="#EDEBE6" stroke-opacity="1" stroke-miterlimit="10" d="M 65 75 L 65 36 " transform="matrix(1, 0, 0, -1, 0, 100)"/>
+<path fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" stroke="#EDEBE6" stroke-opacity="1" stroke-miterlimit="10" d="M 65 36 L 56 4 " transform="matrix(1, 0, 0, -1, 0, 100)"/>
+<path fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" stroke="#EDEBE6" stroke-opacity="1" stroke-miterlimit="10" d="M 65 36 L 74 4 " transform="matrix(1, 0, 0, -1, 0, 100)"/>
+<path fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" stroke="#EDEBE6" stroke-opacity="1" stroke-miterlimit="10" d="M 65 66 L 30 66 " transform="matrix(1, 0, 0, -1, 0, 100)"/>
+<path fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" stroke="#EDEBE6" stroke-opacity="1" stroke-miterlimit="10" d="M 65 66 L 100 66 " transform="matrix(1, 0, 0, -1, 0, 100)"/>
+<path fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke="#E8402F" stroke-opacity="1" stroke-miterlimit="10" d="M 30 66 L 100 66 " transform="matrix(1, 0, 0, -1, 0, 100)"/>
+<path fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke="#E8402F" stroke-opacity="1" stroke-miterlimit="10" d="M 28 76 L 12 76 " transform="matrix(1, 0, 0, -1, 0, 100)"/>
+<path fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke="#E8402F" stroke-opacity="1" stroke-miterlimit="10" d="M 12 76 L 17.265625 78.875 " transform="matrix(1, 0, 0, -1, 0, 100)"/>
+<path fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke="#E8402F" stroke-opacity="1" stroke-miterlimit="10" d="M 12 76 L 17.265625 73.125 " transform="matrix(1, 0, 0, -1, 0, 100)"/>
+<path fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke="#E8402F" stroke-opacity="1" stroke-miterlimit="10" d="M 102 76 L 118 76 " transform="matrix(1, 0, 0, -1, 0, 100)"/>
+<path fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke="#E8402F" stroke-opacity="1" stroke-miterlimit="10" d="M 118 76 L 112.734375 73.125 " transform="matrix(1, 0, 0, -1, 0, 100)"/>
+<path fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke="#E8402F" stroke-opacity="1" stroke-miterlimit="10" d="M 118 76 L 112.734375 78.875 " transform="matrix(1, 0, 0, -1, 0, 100)"/>
+</svg>

@@ -19,6 +19,10 @@ export function Library() {
   return (
     <>
       <header className="screen-head">
+        <p className="label">
+          <span>Exercises</span>
+          <span>{String(list.length).padStart(2, '0')}</span>
+        </p>
         <h1>Library</h1>
       </header>
 
@@ -37,13 +41,16 @@ export function Library() {
       </div>
 
       <ul className="exercise-list">
-        {list.map((ex) => {
+        {list.map((ex, i) => {
           const shownPhase: PhaseId | undefined =
             filter === 'all' ? phasesUsing(ex).find((p) => allowedInPhase(ex, p)) : filter
           const rx = shownPhase ? ex.rx[shownPhase] : undefined
           return (
             <li key={ex.id}>
               <a className="exercise-row" href={href({ name: 'exercise', id: ex.id })}>
+                <span className="row-index" aria-hidden="true">
+                  {String(i + 1).padStart(2, '0')}
+                </span>
                 <Figure exercise={ex} size="small" />
                 <span className="exercise-row-text">
                   <span className="exercise-row-name">{ex.name}</span>

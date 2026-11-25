@@ -18,9 +18,10 @@ export function Equipment() {
   return (
     <>
       <a className="back" href={href({ name: 'library' })}>Library</a>
+      <p className="label">Budget ${shoppingList.budget_usd}</p>
       <h1>Equipment</h1>
       <p className="muted">
-        Budget ${shoppingList.budget_usd}. {shoppingList.note}
+        {shoppingList.note}
       </p>
 
       {byPhase.map(({ phase, items }) => (
@@ -30,7 +31,7 @@ export function Equipment() {
             {items.map((item) => (
               <li key={item.name} className="equipment-item">
                 <div className="equipment-head">
-                  <span>{item.name}</span>
+                  <span className="equipment-name">{item.name}</span>
                   <span className="price">${item.approx_usd}</span>
                 </div>
                 <div className="equipment-links">

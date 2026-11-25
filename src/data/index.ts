@@ -18,8 +18,9 @@ export function getExercise(id: string): Exercise | undefined {
   return byId.get(id)
 }
 
-// Figures live in /assets/figures. Vite fingerprints them and copies them into the build.
-const figureUrls = import.meta.glob('../../assets/figures/*.svg', {
+// Figures live in /assets/figures. The app uses the dark copies in /assets/figures/dark,
+// made by scripts/make-dark-figures.mjs. Vite fingerprints them into the build.
+const figureUrls = import.meta.glob('../../assets/figures/dark/*.svg', {
   eager: true,
   query: '?url',
   import: 'default',

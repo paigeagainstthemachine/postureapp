@@ -19,6 +19,7 @@ export function ExerciseDetail({ id }: { id: string }) {
   return (
     <article>
       <a className="back" href={href({ name: 'library' })}>Library</a>
+      <p className="label">{phases.map((p) => phaseLabel[p]).join(' / ')}</p>
       <h1>{ex.name}</h1>
       <p className="muted cap">{ex.targets}</p>
 
@@ -40,7 +41,9 @@ export function ExerciseDetail({ id }: { id: string }) {
         <h2>Position</h2>
         <p className="cap">{ex.position}</p>
         {ex.side_specific && ex.priority_side && (
-          <p>Priority side: {ex.priority_side}.</p>
+          <p>
+            <span className="side">Priority: {ex.priority_side}</span>
+          </p>
         )}
         {ex.tempo && <p>Lower slowly, {ex.tempo.lowering_seconds} seconds each rep.</p>}
       </section>

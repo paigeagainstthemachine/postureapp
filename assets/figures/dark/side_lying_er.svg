@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="130" height="100" viewBox="0 0 130 100">
+<path fill-rule="evenodd" fill="none" fill-opacity="1" d="M 6 100 L 124 100 C 127.316406 100 130 97.316406 130 94 L 130 6 C 130 2.683594 127.316406 0 124 0 L 6 0 C 2.683594 0 0 2.683594 0 6 L 0 94 C 0 97.316406 2.683594 100 6 100 Z M 6 100 "/>
+<path fill="none" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" stroke="#55534F" stroke-opacity="1" stroke-miterlimit="10" d="M 4 30 L 126 30 " transform="matrix(1, 0, 0, -1, 0, 100)"/>
+<path fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" stroke="#EDEBE6" stroke-opacity="1" stroke-miterlimit="10" d="M 24.5 44 C 24.5 47.589844 21.589844 50.5 18 50.5 C 14.410156 50.5 11.5 47.589844 11.5 44 C 11.5 40.410156 14.410156 37.5 18 37.5 C 21.589844 37.5 24.5 40.410156 24.5 44 " transform="matrix(1, 0, 0, -1, 0, 100)"/>
+<path fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" stroke="#EDEBE6" stroke-opacity="1" stroke-miterlimit="10" d="M 25 42 L 78 40 " transform="matrix(1, 0, 0, -1, 0, 100)"/>
+<path fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" stroke="#EDEBE6" stroke-opacity="1" stroke-miterlimit="10" d="M 78 40 L 100 46 L 92 36 " transform="matrix(1, 0, 0, -1, 0, 100)"/>
+<path fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" stroke="#EDEBE6" stroke-opacity="1" stroke-miterlimit="10" d="M 36 44 L 46 54 " transform="matrix(1, 0, 0, -1, 0, 100)"/>
+<path fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" stroke="#6E6C67" stroke-opacity="1" stroke-dasharray="2 2" stroke-miterlimit="10" d="M 46 54 L 66 56 " transform="matrix(1, 0, 0, -1, 0, 100)"/>
+<path fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" stroke="#EDEBE6" stroke-opacity="1" stroke-miterlimit="10" d="M 46 54 L 44 78 " transform="matrix(1, 0, 0, -1, 0, 100)"/>
+<path fill-rule="evenodd" fill="#E8402F" fill-opacity="1" d="M 37 22 L 51 22 L 51 18 L 37 18 Z M 37 22 "/>
+<path fill-rule="evenodd" fill="#E8402F" fill-opacity="1" d="M 36 25 L 40 25 L 40 15 L 36 15 Z M 36 25 "/>
+<path fill-rule="evenodd" fill="#E8402F" fill-opacity="1" d="M 48 25 L 52 25 L 52 15 L 48 15 Z M 48 25 "/>
+<path fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" stroke="#E8402F" stroke-opacity="1" stroke-miterlimit="10" d="M 62 72 L 52 80 " transform="matrix(1, 0, 0, -1, 0, 100)"/>
+<path fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" stroke="#E8402F" stroke-opacity="1" stroke-miterlimit="10" d="M 52 80 L 57.910156 78.957031 " transform="matrix(1, 0, 0, -1, 0, 100)"/>
+<path fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" stroke="#E8402F" stroke-opacity="1" stroke-miterlimit="10" d="M 52 80 L 54.316406 74.464844 " transform="matrix(1, 0, 0, -1, 0, 100)"/>
+<path fill-rule="evenodd" fill="#6E6C67" fill-opacity="1" d="M 50.5 50 C 50.5 48.621094 49.378906 47.5 48 47.5 C 46.621094 47.5 45.5 48.621094 45.5 50 C 45.5 51.378906 46.621094 52.5 48 52.5 C 49.378906 52.5 50.5 51.378906 50.5 50 "/>
+</svg>
