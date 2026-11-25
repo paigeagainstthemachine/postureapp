@@ -1,4 +1,5 @@
 import { db, setLightDay, updateSettings, useLightDay, useLogsForDate, useSettings, type SetLog } from '../db'
+import { Check } from '../components/Check'
 import { formatDose, getExercise, phase1, phaseLabel, type Exercise } from '../data'
 import {
   counted,
@@ -181,7 +182,7 @@ export function Today() {
                 aria-label={`${name} done`}
                 onClick={() => toggle(item)}
               >
-                {isDone ? '✓' : ''}
+                {isDone ? <Check /> : null}
               </button>
             </li>
           )

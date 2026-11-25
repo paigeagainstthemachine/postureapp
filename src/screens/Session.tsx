@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { Check } from '../components/Check'
 import { db, lastLoad, useLogsForDate, useSettings, type Effort, type SetLog } from '../db'
 import { formatDose, getExercise, phase1, type Exercise, type PhaseId, type Prescription } from '../data'
 import { dateKey, dayPlan, effectiveRx, kindOf, parseCount, planFor, progressionOn, sidesFor } from '../lib/plan'
@@ -389,7 +390,7 @@ function Intro({
                   setHave(n)
                 }}
               >
-                <span className="mini-box" aria-hidden="true">{on ? '✓' : ''}</span>
+                <span className="mini-box" aria-hidden="true">{on ? <Check /> : null}</span>
                 <span className="cap">{item}</span>
               </button>
             </li>

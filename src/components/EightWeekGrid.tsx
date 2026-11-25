@@ -1,4 +1,5 @@
 import type { SetLog } from '../db'
+import { Check } from './Check'
 import { getExercise, phase2, allowedInPhase, type Exercise } from '../data'
 import { addDays, dateKey, fromKey, strengthOnlyIds } from '../lib/plan'
 
@@ -48,7 +49,7 @@ export function EightWeekGrid({ logs, startKey, currentWeek }: { logs: SetLog[];
               {weeks.map((wk, w) => (
                 <td key={w}>
                   <span className={wk.exDone.has(ex.id) ? 'g-box on' : 'g-box'} aria-label={wk.exDone.has(ex.id) ? 'done' : 'not yet'}>
-                    {wk.exDone.has(ex.id) ? '✓' : ''}
+                    {wk.exDone.has(ex.id) ? <Check /> : null}
                   </span>
                 </td>
               ))}
@@ -62,7 +63,7 @@ export function EightWeekGrid({ logs, startKey, currentWeek }: { logs: SetLog[];
                   className={wk.complete ? 'g-box big on' : 'g-box big'}
                   aria-label={`${wk.strengthDays} of 3 strength days`}
                 >
-                  {wk.complete ? '✓' : wk.strengthDays || ''}
+                  {wk.complete ? <Check /> : wk.strengthDays || ''}
                 </span>
               </td>
             ))}

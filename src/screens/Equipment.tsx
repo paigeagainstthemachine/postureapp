@@ -1,4 +1,5 @@
 import { useLiveQuery } from 'dexie-react-hooks'
+import { Check } from '../components/Check'
 import { db } from '../db'
 import { shoppingList, type ShoppingItem } from '../data'
 import { parseCount } from '../lib/plan'
@@ -74,7 +75,7 @@ export function Equipment() {
                       aria-label={`I have the ${item.name}`}
                       onClick={() => toggle(item)}
                     >
-                      {on ? '✓' : ''}
+                      {on ? <Check /> : null}
                     </button>
                   </div>
                   <div className="equipment-links">
