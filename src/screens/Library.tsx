@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useSettings } from '../db'
 import { exercises, formatDose, phase1, phasesUsing, allowedInPhase, phaseLabel, type PhaseId } from '../data'
 import { href } from '../router'
 import { Figure } from '../components/Figure'
@@ -12,8 +13,10 @@ const filters: { id: Filter; label: string }[] = [
 ]
 
 export function Library() {
-  // Phase 1 is the current phase for now. Milestone 4 reads this from settings.
-  const [filter, setFilter] = useState<Filter>('phase1')
+  const settings = useSettings()
+  const [picked, setPicked] = useState<Filter | null>(null)
+  // Defaults to the current phase until a filter is picked.
+  const filter: Filter = picked ?? settings.phase
   const list = filter === 'all' ? exercises : exercises.filter((e) => allowedInPhase(e, filter))
 
   return (
@@ -33,7 +36,7 @@ export function Library() {
             role="radio"
             aria-checked={filter === f.id}
             className="segment"
-            onClick={() => setFilter(f.id)}
+            onClick={() => setPicked(f.id)}
           >
             {f.label}
           </button>

@@ -1,40 +1,53 @@
-# Posture Plan App: Claude Code Bundle
+# Posture Plan
 
-This folder has everything Claude Code needs to build your exercise tracking app.
+A personal, local-first app for doing and tracking a posture exercise program. It guides each session (timers, rep counter, rest, sides), logs how it went, and shows progress over time. Everything stays on the phone: no account, no backend.
 
-## What is inside
-```
-README.md                 this file, with the starter prompt
-CLAUDE.md                 project instructions Claude Code reads automatically
-PRODUCT_BRIEF.md          full product spec: features, data model, design, milestones
-data/
-  exercises.json          12 exercises with steps, cues, dosing per phase, safety flags
-  program.json            phases, weekly schedules, Phase 2 progression
-  shopping-list.json      equipment, prices, links
-assets/figures/           12 exercise illustrations (SVG and 400 dpi PNG)
-reference/
-  pdfs/                   the three printable PDFs (Phase 1, Phase 2, shopping list)
-  figure-source/          Python source for the illustrations
+## Run it
+
+```bash
+npm install
+npm run dev
 ```
 
-## How to use it
-1. Unzip and put this folder somewhere you keep projects.
-2. Create a new GitHub repo, or run `git init` in this folder, so Vercel can deploy it later.
-3. Open the folder in Claude Code (`cd` into it and run `claude`).
-4. Paste the starter prompt below.
+Open http://localhost:5173 and make the window phone width.
 
-## Starter prompt (copy and paste)
-```
-Read CLAUDE.md and PRODUCT_BRIEF.md in this folder, then look at the files in data/ and assets/figures/.
+To try the production build, including offline:
 
-I want you to build the Posture Plan App described in the brief. Before writing code, give me a short plan: the stack you recommend (I use Vercel and GitHub, and I have built plain HTML/CSS/JS apps before), the folder structure, and what you will build for milestone 1. Then build milestone 1 and run it so I can see it at phone width.
-
-I am a product designer, so before you style anything, show me one proposed visual direction (colors, type, a sketch of the Today screen and the session player) and wait for my reaction.
-
-Keep going milestone by milestone. At the end of each one, tell me what works, how to try it, and what is next. Ask me before changing any exercise content or doses.
+```bash
+npm run build
+npm run preview
 ```
 
-## Tips
-- The app is for one person and stores data on the device. Install it to your home screen after deploying, and use the JSON export now and then as a backup.
-- Start with Phase 1 only. Phase 2 unlocks later through a manual "Start Phase 2" action, once your provider clears you to exercise.
-- Prices in the shopping list are approximate as of 2026-11-25.
+## Deploy
+
+Pushes to `main` on GitHub deploy to Vercel automatically. Vercel detects Vite, so there are no settings to change. `vercel.json` stops the service worker file from being cached, so installed copies pick up updates.
+
+On iPhone: open the site in Safari, tap Share, then Add to Home Screen. Open it once while online, and after that it works offline.
+
+## Where things live
+
+```
+data/                  program content: exercises, phases, schedules, shopping list
+src/data/              typed loaders for data/ and the dose formatter
+src/lib/plan.ts        what a day needs: plans, Phase 2 weeks, progression
+src/db/                on-device storage (IndexedDB through Dexie)
+src/figures/           exercise figures: start and end poses, and the renderer
+src/screens/           Today, Session, Progress, Library, Settings, PT summary
+src/components/        shared pieces: check-in, pain chart, 8 week grid, figure
+public/icons/          app icon
+reference/             the original PDFs and figure source, for reference only
+assets/figures/        the original static drawings, for reference only
+```
+
+Program content comes only from `data/`. Change a dose or a step there, not in the components.
+
+## Rules the app keeps
+
+- Phase 1 never shows an exercise marked `pregnancy_safe: false`.
+- Phase changes are manual, with a confirmation.
+- No streaks, no red failure states, no medical interpretation of check-ins.
+- No em dashes in copy.
+
+## Your data
+
+Data lives in the browser's storage on this device. Use Settings, then Save backup, now and then. Restore replaces what is on the device with the backup, after a confirmation.

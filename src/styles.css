@@ -816,3 +816,40 @@ a { color: var(--text); text-underline-offset: 3px; }
 [data-newborn] .readout-big { font-size: 128px; }
 [data-newborn] .choice { min-height: 60px; font-size: 20px; }
 [data-newborn] .tab { min-height: 64px; font-size: 14px; }
+
+/* ---------- PT summary ---------- */
+.summary-range { margin: 4px 0 16px; }
+.summary-head p { margin: 2px 0; }
+.summary-flags li { margin-bottom: 8px; }
+.summary-table { font-size: 12px; }
+.summary-table td, .summary-table th { padding-right: 8px; }
+
+@media print {
+  :root {
+    --bg: #ffffff;
+    --panel: #ffffff;
+    --text: #111111;
+    --grey: #555555;
+    --line: #cccccc;
+    --line-strong: #888888;
+    --red: #b3261e;
+    color-scheme: light;
+  }
+  body { font-size: 12pt; background: #fff; color: #111; }
+  .no-print, .tabbar, .reminder, .tooltip { display: none !important; }
+  .screen { padding: 0; }
+  .app { max-width: none; }
+  .summary h1 { font-size: 26pt; }
+  .summary h2 { font-size: 14pt; margin-top: 16pt; }
+  .summary section { break-inside: avoid; }
+  .summary-table { font-size: 10pt; }
+  .chart svg { max-height: 220px; }
+  @page { margin: 14mm; }
+}
+.file-btn { cursor: pointer; }
+.file-btn:focus-within { outline: 2px solid var(--focus); outline-offset: 3px; }
+.equipment-head { align-items: center; }
+.equipment-head .equipment-name { flex: 1; }
+.equip-box { width: 44px; height: 44px; font-size: 20px; }
+.equipment-item.is-owned .equipment-name { color: var(--grey); }
+.summary-flags .mono { font-size: 0.8em; }

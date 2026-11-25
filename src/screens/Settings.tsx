@@ -3,6 +3,7 @@ import { updateSettings, useSettings } from '../db'
 import { phase1, phase2, phaseLabel } from '../data'
 import { dateKey, fromKey, phase2Week, shortDate } from '../lib/plan'
 import { href } from '../router'
+import { readBackup, restoreBackup, saveBackup } from '../lib/backup'
 
 const restChoices = [30, 45, 60, 90]
 const nudgeChoices: { label: string; value: number | undefined }[] = [
@@ -23,6 +24,27 @@ export function Settings() {
   const week = phase2Week(settings.phase2StartDate, new Date())
   const [perm, setPerm] = useState<Perm>(currentPerm)
   useEffect(() => setPerm(currentPerm()), [])
+
+  const [backupMsg, setBackupMsg] = useState<string | null>(null)
+
+  async function onRestoreFile(file: File | undefined) {
+    if (!file) return
+    setBackupMsg(null)
+    try {
+      const { backup, summary } = await readBackup(file)
+      const when = summary.exportedAt ? new Date(summary.exportedAt).toLocaleString() : 'an unknown date'
+      const ok = confirm(
+        `Replace everything on this device with the backup from ${when}?\n\n` +
+          `${summary.counts.checkIns} check-ins, ${summary.counts.sessions} sessions, ${summary.counts.setLogs} logged sets.\n\n` +
+          'What is on this device now will be replaced.',
+      )
+      if (!ok) return
+      await restoreBackup(backup)
+      setBackupMsg('Backup restored.')
+    } catch (e) {
+      setBackupMsg((e as Error).message)
+    }
+  }
 
   async function askPermission() {
     if (!('Notification' in window)) return
@@ -156,6 +178,33 @@ export function Settings() {
         )}
         {perm === 'granted' && <p className="label">Phone notifications: allowed</p>}
         {perm === 'denied' && <p className="label">Phone notifications: blocked in browser settings</p>}
+      </section>
+
+      <section>
+        <h2>Backup</h2>
+        <p className="muted small">
+          Your data lives only on this phone. Save a backup file now and then, for example to Files or iCloud Drive.
+        </p>
+        <div className="row-2 spaced">
+          <button className="btn-quiet" onClick={() => void saveBackup()}>Save backup</button>
+          <label className="btn-quiet file-btn">
+            Restore
+            <input
+              type="file"
+              accept="application/json,.json"
+              className="sr-only"
+              onChange={(e) => {
+                void onRestoreFile(e.target.files?.[0])
+                e.target.value = ''
+              }}
+            />
+          </label>
+        </div>
+        {backupMsg && (
+          <p className="label spaced" role="status">
+            {backupMsg}
+          </p>
+        )}
       </section>
 
       <section>

@@ -9,10 +9,11 @@ import { Today } from './screens/Today'
 import { Session } from './screens/Session'
 import { Progress } from './screens/Progress'
 import { Settings } from './screens/Settings'
+import { Summary } from './screens/Summary'
 
 const tabs: { label: string; route: Route; match: Route['name'][] }[] = [
   { label: 'Today', route: { name: 'today' }, match: ['today', 'settings'] },
-  { label: 'Progress', route: { name: 'progress' }, match: ['progress'] },
+  { label: 'Progress', route: { name: 'progress' }, match: ['progress', 'summary'] },
   { label: 'Library', route: { name: 'library' }, match: ['library', 'exercise', 'equipment'] },
 ]
 
@@ -28,20 +29,21 @@ export function App() {
 
   return (
     <div className="app">
-      {!inSession && <ReminderBanner />}
+      {!inSession && route.name !== 'summary' && <ReminderBanner />}
       <main className={inSession ? 'screen screen-session' : 'screen'}>
         {route.name === 'today' && <Today />}
         {route.name === 'session' && <Session />}
         {route.name === 'quick' && <Session quickId={route.id} />}
         {route.name === 'progress' && <Progress />}
         {route.name === 'settings' && <Settings />}
+        {route.name === 'summary' && <Summary />}
         {route.name === 'library' && <Library />}
         {route.name === 'exercise' && <ExerciseDetail id={route.id} />}
         {route.name === 'equipment' && <Equipment />}
       </main>
 
       {!inSession && (
-      <nav className="tabbar" aria-label="Main">
+      <nav className="tabbar no-print" aria-label="Main">
         {tabs.map((t) => {
           const active = t.match.includes(route.name)
           return (

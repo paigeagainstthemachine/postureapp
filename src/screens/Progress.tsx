@@ -5,6 +5,7 @@ import { addDays, counted, dateKey, dayPlan, fromKey, progressionOn, shortDate, 
 import { PainChart } from '../components/PainChart'
 import { EightWeekGrid } from '../components/EightWeekGrid'
 import { WeekCard } from '../components/WeekCard'
+import { href } from '../router'
 
 const TREND_DAYS = 56
 const dayLetters = ['M', 'T', 'W', 'T', 'F', 'S', 'S']
@@ -69,6 +70,10 @@ export function Progress() {
         </p>
         <h1>Progress</h1>
       </header>
+
+      <a className="link-row" href={href({ name: 'summary' })}>
+        PT summary to print or share
+      </a>
 
       <section aria-labelledby="week-h">
         <h2 id="week-h">This week</h2>
