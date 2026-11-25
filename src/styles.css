@@ -873,3 +873,8 @@ a { color: var(--text); text-underline-offset: 3px; }
 }
 .mini-box .check-mark { width: 78%; height: 78%; stroke-width: 2.25; }
 .g-box .check-mark { width: 80%; height: 80%; stroke-width: 2.5; }
+.row-2 .checkin-save { width: auto; flex: 2; }
+.player .checkin { margin-top: 8px; }
+.checkin-link { display: flex; margin-top: 4px; }
+.player .checkin { border: 0; padding: 0; }
+.player .checkin > .label:first-child { display: none; }

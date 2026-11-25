@@ -5,10 +5,24 @@ import { db, type CheckIn } from '../db'
 type Headache = CheckIn['headache']
 const headaches: Headache[] = ['none', 'mild', 'bad']
 
-/** Ten-second daily check-in. Shows trends only, never interprets them. */
-export function CheckInCard({ date }: { date: string }) {
+/**
+ * Ten-second daily check-in. Shows trends only, never interprets them.
+ * With onDone it is a one-off form (session start, or opened from Today):
+ * it always shows the form and calls onDone after saving.
+ */
+export function CheckInCard({
+  date,
+  onDone,
+  onSkip,
+  skipLabel = 'Skip',
+}: {
+  date: string
+  onDone?: () => void
+  onSkip?: () => void
+  skipLabel?: string
+}) {
   const saved = useLiveQuery(() => db.checkIns.get(date), [date])
-  const [editing, setEditing] = useState(false)
+  const [editing, setEditing] = useState(Boolean(onDone))
   const [pain, setPain] = useState<number | undefined>()
   const [headache, setHeadache] = useState<Headache>('none')
   const [arm, setArm] = useState(false)
@@ -23,7 +37,8 @@ export function CheckInCard({ date }: { date: string }) {
   async function save() {
     if (pain === undefined) return
     await db.checkIns.put({ date, painRightNeckShoulder: pain, headache, armFatigueOrTingling: arm })
-    setEditing(false)
+    if (onDone) onDone()
+    else setEditing(false)
   }
 
   if (saved && !editing) {
@@ -83,9 +98,16 @@ export function CheckInCard({ date }: { date: string }) {
         </div>
       </fieldset>
 
-      <button className="btn-solid checkin-save" onClick={save} disabled={pain === undefined}>
-        {pain === undefined ? 'Pick a pain number' : 'Save check-in'}
-      </button>
+      <div className={onSkip ? 'row-2' : undefined}>
+        {onSkip && (
+          <button className="btn-quiet" onClick={onSkip}>
+            {skipLabel}
+          </button>
+        )}
+        <button className="btn-solid checkin-save" onClick={save} disabled={pain === undefined}>
+          {pain === undefined ? 'Pick a pain number' : 'Save check-in'}
+        </button>
+      </div>
     </section>
   )
 }

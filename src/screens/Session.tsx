@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
 import { Check } from '../components/Check'
 import { db, lastLoad, useLogsForDate, useSettings, type Effort, type SetLog } from '../db'
-import { formatDose, getExercise, phase1, type Exercise, type PhaseId, type Prescription } from '../data'
+import { formatDose, getExercise, type Exercise, type Prescription } from '../data'
 import { dateKey, dayPlan, effectiveRx, kindOf, parseCount, planFor, progressionOn, sidesFor } from '../lib/plan'
 import { cue, unlockAudio, useWakeLock } from '../lib/cues'
 import { useNow } from '../lib/useNow'
 import { Figure } from '../components/Figure'
+import { CheckInCard } from '../components/CheckInCard'
 import { href } from '../router'
 
 const GET_READY_SECONDS = 3
@@ -14,6 +15,7 @@ const AUTO_LIFT_SECONDS = 1.5
 const AUTO_DEFAULT_LOWER_SECONDS = 1.5
 
 type Step =
+  | { t: 'checkin'; warmup?: string }
   | { t: 'warmup'; text: string }
   | { t: 'intro' }
   | { t: 'work' }
@@ -29,14 +31,6 @@ interface Pos {
 
 const pad2 = (n: number) => String(n).padStart(2, '0')
 const secondsLeft = (endsAt: number, now: number) => Math.max(0, Math.ceil((endsAt - now) / 1000))
-
-function stopRule(phase: PhaseId): string {
-  const rules = phase === 'phase1' ? phase1.ground_rules : []
-  return (
-    rules.find((r) => r.toLowerCase().startsWith('stop')) ??
-    'Stop and rest if dizzy, short of breath, sharp pain, or tingling or numbness in the arm.'
-  )
-}
 
 /**
  * Guided session. With quickId it runs a single exercise straight away (quick chin nods).
@@ -62,13 +56,17 @@ export function Session({ quickId }: { quickId?: string }) {
       const left = plan.filter((e) => !done.has(e.id))
       setQueue(left.length ? left : plan)
       const warmup = dayPlan(phase, new Date()).warmup
-      if (warmup) setStep({ t: 'warmup', text: warmup })
+      // Check in first if today has no check-in yet, then warm up on strength days.
+      void db.checkIns.get(today).then((ci) => {
+        if (!ci) setStep({ t: 'checkin', warmup })
+        else if (warmup) setStep({ t: 'warmup', text: warmup })
+      })
     })
   }, [queue, quickId, phase, today, settings.loaded])
 
   const [pos, setPos] = useState<Pos>({ ex: 0, set: 0, side: 0 })
   const [step, setStep] = useState<Step>(quickId ? { t: 'work' } : { t: 'intro' })
-  const [showRules, setShowRules] = useState(false)
+  const [confirmStop, setConfirmStop] = useState(false)
   const sessionId = useRef<number | null>(null)
   const restNow = useNow(step.t === 'rest', 250)
 
@@ -199,8 +197,14 @@ export function Session({ quickId }: { quickId?: string }) {
     setStep({ t: 'intro' })
   }
 
+  // Uses an in-app sheet: the browser's confirm() is blocked in some installed and embedded views.
   function stop() {
-    if (confirm('End the session? Everything you did is saved.')) void finish(true)
+    if (sessionId.current === null && !sessionPromise.current) {
+      // Nothing started yet: just leave.
+      location.hash = href({ name: 'today' })
+      return
+    }
+    setConfirmStop(true)
   }
 
   if (step.t === 'finished') {
@@ -225,26 +229,40 @@ export function Session({ quickId }: { quickId?: string }) {
         <span className="mono">
           {pad2(pos.ex + 1)}/{pad2(queue.length)}
         </span>
-        <button className="top-btn" onClick={() => setShowRules(true)} aria-haspopup="dialog">
-          ! Stop rules
-        </button>
       </div>
 
-      <div className="figure-frame player-figure">
-        <Figure exercise={ex} />
-      </div>
+      {step.t === 'checkin' ? (
+        <>
+          <p className="label">Before you start</p>
+          <h1 className="player-name">Check in</h1>
+        </>
+      ) : (
+        <>
+          <div className="figure-frame player-figure">
+            <Figure exercise={ex} />
+          </div>
 
-      <h1 className="player-name">{ex.name}</h1>
-      <p className="player-meta">
-        {side ? (
-          <span className="side">{side} side</span>
-        ) : (
-          ex.priority_side && <span className="side">Priority: {ex.priority_side}</span>
-        )}
-        <span className="label">
-          {ex.position} · {formatDose({ ...rx, times_per_day: undefined })}
-        </span>
-      </p>
+          <h1 className="player-name">{ex.name}</h1>
+          <p className="player-meta">
+            {side ? (
+              <span className="side">{side} side</span>
+            ) : (
+              ex.priority_side && <span className="side">Priority: {ex.priority_side}</span>
+            )}
+            <span className="label">
+              {ex.position} · {formatDose({ ...rx, times_per_day: undefined })}
+            </span>
+          </p>
+        </>
+      )}
+
+      {step.t === 'checkin' && (
+        <CheckInCard
+          date={today}
+          onDone={() => setStep(step.warmup ? { t: 'warmup', text: step.warmup } : { t: 'intro' })}
+          onSkip={() => setStep(step.warmup ? { t: 'warmup', text: step.warmup } : { t: 'intro' })}
+        />
+      )}
 
       {step.t === 'warmup' && (
         <>
@@ -313,14 +331,25 @@ export function Session({ quickId }: { quickId?: string }) {
         />
       )}
 
-      {showRules && (
-        <div className="sheet-backdrop" onClick={() => setShowRules(false)}>
-          <div className="sheet" role="dialog" aria-modal="true" aria-label="Stop rules" onClick={(e) => e.stopPropagation()}>
-            <p className="label">Stop rules</p>
-            <p className="sheet-text">{stopRule(phase)}</p>
-            <button className="btn-primary" autoFocus onClick={() => setShowRules(false)}>
-              Got it
-            </button>
+      {confirmStop && (
+        <div className="sheet-backdrop" onClick={() => setConfirmStop(false)}>
+          <div className="sheet" role="dialog" aria-modal="true" aria-labelledby="stop-h" onClick={(e) => e.stopPropagation()}>
+            <p className="label" id="stop-h">End the session?</p>
+            <p className="sheet-text">Everything you did so far is saved.</p>
+            <div className="row-2">
+              <button className="btn-quiet" autoFocus onClick={() => setConfirmStop(false)}>
+                Keep going
+              </button>
+              <button
+                className="btn-solid"
+                onClick={() => {
+                  setConfirmStop(false)
+                  void finish(true)
+                }}
+              >
+                End session
+              </button>
+            </div>
           </div>
         </div>
       )}

@@ -1,3 +1,5 @@
+import { useState } from 'react'
+import { useLiveQuery } from 'dexie-react-hooks'
 import { db, setLightDay, updateSettings, useLightDay, useLogsForDate, useSettings, type SetLog } from '../db'
 import { Check } from '../components/Check'
 import { formatDose, getExercise, phase1, phaseLabel, type Exercise } from '../data'
@@ -51,6 +53,9 @@ export function Today() {
   const doneCount = target.filter((i) => done.has(i.id)).length
   const allDone = target.length > 0 && doneCount === target.length
   const hasExercises = plan.items.some((i) => i.kind === 'exercise')
+
+  const checkIn = useLiveQuery(() => db.checkIns.get(today), [today])
+  const [checkingIn, setCheckingIn] = useState(false)
 
   const quickEx = getExercise(QUICK_ID)
   const quickTarget = settings.phase === 'phase1' ? phase1.extra_chin_nod_sessions_per_day : 0
@@ -196,7 +201,15 @@ export function Today() {
         </button>
       )}
 
-      <CheckInCard date={today} />
+      {checkingIn ? (
+        <CheckInCard date={today} onDone={() => setCheckingIn(false)} onSkip={() => setCheckingIn(false)} skipLabel="Cancel" />
+      ) : (
+        <button className="text-btn checkin-link" onClick={() => setCheckingIn(true)}>
+          {checkIn
+            ? `Checked in: pain ${checkIn.painRightNeckShoulder}, headache ${checkIn.headache}. Edit`
+            : 'Check in without a session'}
+        </button>
+      )}
 
       {quickEx && quickTarget > 0 && (
         <div className="quick">
