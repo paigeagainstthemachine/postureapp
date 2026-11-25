@@ -750,3 +750,5 @@ a { color: var(--text); text-underline-offset: 3px; }
   cursor: pointer;
   white-space: nowrap;
 }
+.fig-eye { fill: var(--text); }
+.fig-gaze { stroke: var(--grey); stroke-width: 1.5; stroke-dasharray: 2 3; stroke-linecap: butt !important; }

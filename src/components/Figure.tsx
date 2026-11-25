@@ -93,7 +93,22 @@ function Body({ def, pose, ghost }: { def: FigureDef; pose: Pose; ghost?: boolea
         r={HEAD_R}
         className={ghost ? 'fig-head-ghost' : headActive ? 'fig-head fig-head-active' : 'fig-head'}
       />
+      {def.gaze && !ghost && <Gaze head={pose.head} dir={def.gaze === 'right' ? 1 : -1} />}
       {list.filter((b) => nearArm(b.key)).map(line)}
+    </g>
+  )
+}
+
+/** Eye plus a level line of sight, so you can see the head does not tip. */
+function Gaze({ head, dir }: { head: P; dir: 1 | -1 }) {
+  const eyeY = head[1] - 1
+  const eyeX = head[0] + dir * 3
+  const x0 = head[0] + dir * (HEAD_R + 3)
+  const x1 = x0 + dir * 26
+  return (
+    <g>
+      <rect x={eyeX - 1.5} y={eyeY - 1.5} width={3} height={3} className="fig-eye" />
+      <line x1={x0} y1={eyeY} x2={x1} y2={eyeY} className="fig-gaze" />
     </g>
   )
 }

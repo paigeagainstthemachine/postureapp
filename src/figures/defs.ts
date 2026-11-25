@@ -45,12 +45,16 @@ const seated: Pose = {
 export const figureDefs: Record<string, FigureDef> = {
   chin_nod: {
     props: [floor(), ...chair(48, 86)],
-    a: { ...seated, neck: [62, 42], head: [72, 30], elbow: [68, 58], hand: [84, 66] },
+    // Forward head to ears over shoulders: the head slides straight back,
+    // eyes level, no tipping. Torso and shoulders stay still.
+    a: { ...seated, head: [71, 29], elbow: [68, 58], hand: [84, 66] },
     b: { ...seated, elbow: [68, 58], hand: [84, 66] },
+    linear: ['head'],
+    gaze: 'right',
     active: ['head'],
     trails: [{ joint: 'head', dy: -14 }],
-    timing: [0.9, 1.6, 0.9, 0.8],
-    labels: ['Glide back', 'Hold', 'Relax', ''],
+    timing: [1.0, 1.6, 1.0, 0.8],
+    labels: ['Glide chin straight back', 'Hold, eyes level', 'Relax', ''],
   },
 
   band_row: {

@@ -50,7 +50,7 @@ export function poseAt(def: FigureDef, t: number): Pose {
     const pb = b[j] ?? pa
     if (!pa || !pb) continue
     const parent = parentOf(j, a)
-    if (!parent || !a[parent] || !b[parent] || !out[parent]) {
+    if (!parent || !a[parent] || !b[parent] || !out[parent] || def.linear?.includes(j)) {
       out[j] = [lerp(pa[0], pb[0], t), lerp(pa[1], pb[1], t)]
       continue
     }
