@@ -1,4 +1,4 @@
-import { db, useLogsForDate, useSettings, type SetLog } from '../db'
+import { db, setLightDay, updateSettings, useLightDay, useLogsForDate, useSettings, type SetLog } from '../db'
 import { formatDose, getExercise, phase1, phaseLabel, type Exercise } from '../data'
 import {
   counted,
@@ -44,7 +44,8 @@ export function Today() {
   const logs = useLogsForDate(today)
   const progression = progressionOn(settings.phase, settings.phase2StartDate, now)
   const plan = dayPlan(settings.phase, now)
-  const target = counted(plan.items)
+  const light = useLightDay(today)
+  const target = light ? [] : counted(plan.items)
   const done = doneIds(logs)
   const doneCount = target.filter((i) => done.has(i.id)).length
   const allDone = target.length > 0 && doneCount === target.length
@@ -109,9 +110,26 @@ export function Today() {
             {phaseLabel[settings.phase]}
           </a>
         </p>
-        <h1>Today</h1>
+        <div className="today-title">
+          <h1>Today</h1>
+          <button
+            className="mode-toggle"
+            aria-pressed={settings.newbornMode}
+            onClick={() => updateSettings({ newbornMode: !settings.newbornMode })}
+          >
+            Newborn mode {settings.newbornMode ? 'on' : 'off'}
+          </button>
+        </div>
         {settings.phase === 'phase2' && <p className="label">{dayTypeLabel[plan.type]}</p>}
       </header>
+
+      {light && (
+        <section className="light-day">
+          <p className="light-day-title">Light day</p>
+          <p className="muted">Nothing is expected today. Rest counts. Anything you do still gets saved.</p>
+          <button className="btn-quiet" onClick={() => setLightDay(today, false)}>Back to a normal day</button>
+        </section>
+      )}
 
       {progression && <WeekCard p={progression} />}
 
@@ -130,7 +148,7 @@ export function Today() {
 
       {plan.warmup && <p className="warmup"><span className="label">Warm-up</span> {plan.warmup}</p>}
 
-      <ul className="check-list">
+      <ul className={light ? 'check-list is-light' : 'check-list'}>
         {plan.items.map((item, i) => {
           const isDone = done.has(item.id)
           const name = item.kind === 'exercise' ? item.ex.name : item.optional ? 'Walk, if you feel like it' : 'Easy walk'
@@ -143,7 +161,7 @@ export function Today() {
           const body = (
             <>
               <span className="exercise-row-name">{name}</span>
-              {detail && <span className="exercise-row-dose">{detail}</span>}
+              {detail && <span className="exercise-row-dose nb-hide">{detail}</span>}
             </>
           )
           return (
@@ -171,6 +189,11 @@ export function Today() {
       </ul>
 
       {allDone && <p className="all-done">All done for today. Nice work.</p>}
+      {!light && !allDone && (
+        <button className="text-btn" onClick={() => setLightDay(today, true)}>
+          Make today a light day
+        </button>
+      )}
 
       <CheckInCard date={today} />
 
@@ -189,7 +212,7 @@ export function Today() {
         </div>
       )}
 
-      {hasExercises && (
+      {hasExercises && !light && (
         <div className="bottom-action">
           <a className="btn-primary" href={href({ name: 'session' })} onClick={unlockAudio}>
             {allDone ? 'Go again' : doneCount > 0 ? 'Continue session' : 'Start session'}

@@ -1,10 +1,18 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { updateSettings, useSettings } from '../db'
 import { phase1, phase2, phaseLabel } from '../data'
 import { dateKey, fromKey, phase2Week, shortDate } from '../lib/plan'
 import { href } from '../router'
 
 const restChoices = [30, 45, 60, 90]
+const nudgeChoices: { label: string; value: number | undefined }[] = [
+  { label: 'Off', value: undefined },
+  { label: '45 min', value: 45 },
+  { label: '60 min', value: 60 },
+]
+
+type Perm = NotificationPermission | 'unsupported'
+const currentPerm = (): Perm => ('Notification' in window ? Notification.permission : 'unsupported')
 
 export function Settings() {
   const settings = useSettings()
@@ -13,6 +21,13 @@ export function Settings() {
   const [cleared, setCleared] = useState(false)
   const current = settings.phase === 'phase1' ? phase1 : phase2
   const week = phase2Week(settings.phase2StartDate, new Date())
+  const [perm, setPerm] = useState<Perm>(currentPerm)
+  useEffect(() => setPerm(currentPerm()), [])
+
+  async function askPermission() {
+    if (!('Notification' in window)) return
+    setPerm(await Notification.requestPermission())
+  }
 
   async function startPhase2() {
     if (!cleared) return
@@ -87,6 +102,61 @@ export function Settings() {
           Back to Phase 1
         </button>
       )}
+
+      <section>
+        <h2>Display</h2>
+        <button
+          className="choice wide"
+          role="switch"
+          aria-checked={settings.newbornMode}
+          onClick={() => updateSettings({ newbornMode: !settings.newbornMode })}
+        >
+          Newborn mode: {settings.newbornMode ? 'on' : 'off'}
+        </button>
+        <p className="muted small">Bigger buttons, fewer words, and a softer Start button for night use.</p>
+      </section>
+
+      <section>
+        <h2>Reminders</h2>
+        <p className="question">Chin nod nudge, weekdays 10 AM to 5 PM</p>
+        <div className="choice-row" role="radiogroup" aria-label="Chin nod nudge">
+          {nudgeChoices.map((c) => (
+            <button
+              key={c.label}
+              className="choice"
+              role="radio"
+              aria-checked={settings.nudgeInterval === c.value}
+              onClick={() => updateSettings({ nudgeInterval: c.value })}
+            >
+              {c.label}
+            </button>
+          ))}
+        </div>
+
+        <label className="field">
+          <span className="question">Daily reminder</span>
+          <input
+            type="time"
+            value={settings.reminderTime ?? ''}
+            onChange={(e) => updateSettings({ reminderTime: e.target.value || undefined })}
+          />
+        </label>
+        {settings.reminderTime && (
+          <button className="text-btn" onClick={() => updateSettings({ reminderTime: undefined })}>
+            Turn off daily reminder
+          </button>
+        )}
+
+        <p className="muted small">
+          Reminders show inside the app while it is open. Phone notifications are a best-effort extra and may not
+          arrive when the app is closed, especially on iPhone.
+        </p>
+        {perm === 'default' && (
+          <button className="btn-quiet wide" onClick={askPermission}>Allow phone notifications</button>
+        )}
+        {perm === 'granted' && <p className="label">Phone notifications: allowed</p>}
+        {perm === 'denied' && <p className="label">Phone notifications: blocked in browser settings</p>}
+      </section>
 
       <section>
         <h2>Rest between sets</h2>

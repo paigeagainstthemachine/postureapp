@@ -1,4 +1,7 @@
+import { useEffect } from 'react'
 import { useRoute, href, type Route } from './router'
+import { useSettings } from './db'
+import { ReminderBanner } from './components/ReminderBanner'
 import { Library } from './screens/Library'
 import { ExerciseDetail } from './screens/ExerciseDetail'
 import { Equipment } from './screens/Equipment'
@@ -16,9 +19,16 @@ const tabs: { label: string; route: Route; match: Route['name'][] }[] = [
 export function App() {
   const route = useRoute()
   const inSession = route.name === 'session' || route.name === 'quick'
+  const { newbornMode } = useSettings()
+
+  // Newborn mode restyles the whole app through one attribute.
+  useEffect(() => {
+    document.documentElement.toggleAttribute('data-newborn', newbornMode)
+  }, [newbornMode])
 
   return (
     <div className="app">
+      {!inSession && <ReminderBanner />}
       <main className={inSession ? 'screen screen-session' : 'screen'}>
         {route.name === 'today' && <Today />}
         {route.name === 'session' && <Session />}

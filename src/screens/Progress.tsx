@@ -19,6 +19,7 @@ export function Progress() {
   const settings = useSettings()
   const logs = useLiveQuery(() => db.setLogs.toArray()) ?? []
   const checkIns = useLiveQuery(() => db.checkIns.toArray()) ?? []
+  const lightDays = new Set((useLiveQuery(() => db.days.toArray()) ?? []).filter((d) => d.light).map((d) => d.date))
   const now = new Date()
   const todayKey = dateKey(now)
 
@@ -35,6 +36,7 @@ export function Progress() {
       planned: plan.length,
       done: plan.filter((e) => done.has(e.id)).length,
       future: key > todayKey,
+      light: lightDays.has(key),
     }
   })
   const activeDays = week.filter((w) => w.done > 0).length
@@ -76,14 +78,14 @@ export function Progress() {
             return (
               <div key={w.key} className={w.key === todayKey ? 'week-day is-today' : 'week-day'}>
                 <span className="label">{dayLetters[i]}</span>
-                <span className={w.future ? 'week-cell future' : 'week-cell'} aria-hidden="true">
+                <span className={w.future ? 'week-cell future' : w.light && !w.done ? 'week-cell light' : 'week-cell'} aria-hidden="true">
                   <span className="week-fill" style={{ height: `${frac * 100}%` }} />
                 </span>
                 <span className="mono week-count">
-                  {w.future ? '' : `${w.done}/${w.planned}`}
+                  {w.future ? '' : w.light && !w.done ? 'rest' : `${w.done}/${w.planned}`}
                 </span>
                 <span className="sr-only">
-                  {w.d.toLocaleDateString('en-US', { weekday: 'long' })}: {w.future ? 'coming up' : `${w.done} of ${w.planned} done`}
+                  {w.d.toLocaleDateString('en-US', { weekday: 'long' })}: {w.future ? 'coming up' : w.light && !w.done ? 'light day' : `${w.done} of ${w.planned} done`}
                 </span>
               </div>
             )

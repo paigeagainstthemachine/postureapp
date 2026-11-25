@@ -42,6 +42,12 @@ export interface CheckIn {
   note?: string
 }
 
+/** A day marked light: nothing is expected that day. */
+export interface DayMark {
+  date: string
+  light: boolean
+}
+
 export interface OwnedEquipment {
   itemId: string
   owned: boolean
@@ -70,6 +76,7 @@ class PostureDB extends Dexie {
   checkIns!: EntityTable<CheckIn, 'date'>
   ownedEquipment!: EntityTable<OwnedEquipment, 'itemId'>
   settings!: EntityTable<Settings, 'id'>
+  days!: EntityTable<DayMark, 'date'>
 
   constructor() {
     super('posture-plan')
@@ -80,6 +87,7 @@ class PostureDB extends Dexie {
       ownedEquipment: 'itemId',
       settings: 'id',
     })
+    this.version(2).stores({ days: 'date' })
   }
 }
 
@@ -97,6 +105,15 @@ export function useSettings(): Settings & { loaded: boolean } {
 export async function updateSettings(patch: Partial<Omit<Settings, 'id'>>) {
   const current = (await db.settings.get('settings')) ?? defaultSettings
   await db.settings.put({ ...current, ...patch })
+}
+
+export function useLightDay(date: string): boolean {
+  return useLiveQuery(() => db.days.get(date), [date])?.light ?? false
+}
+
+export async function setLightDay(date: string, light: boolean) {
+  if (light) await db.days.put({ date, light: true })
+  else await db.days.delete(date)
 }
 
 export function useLogsForDate(date: string): SetLog[] {

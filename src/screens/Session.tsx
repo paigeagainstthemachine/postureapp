@@ -258,7 +258,7 @@ export function Session({ quickId }: { quickId?: string }) {
       )}
 
       {step.t === 'intro' && (
-        <Intro ex={ex} rx={rx} lowerSeconds={kind === 'reps' ? lowerSeconds : undefined} weekNote={pos.ex === 0 ? progression?.change : undefined} onBegin={() => { unlockAudio(); void ensureSession(); setStep({ t: 'work' }) }} onSkip={skip} onLater={queue.length - pos.ex > 1 ? doLater : undefined} />
+        <Intro ex={ex} rx={rx} brief={settings.newbornMode} lowerSeconds={kind === 'reps' ? lowerSeconds : undefined} weekNote={pos.ex === 0 ? progression?.change : undefined} onBegin={() => { unlockAudio(); void ensureSession(); setStep({ t: 'work' }) }} onSkip={skip} onLater={queue.length - pos.ex > 1 ? doLater : undefined} />
       )}
 
       {step.t === 'work' && kind !== 'spots' && (
@@ -330,6 +330,7 @@ export function Session({ quickId }: { quickId?: string }) {
 function Intro({
   ex,
   rx,
+  brief,
   lowerSeconds,
   weekNote,
   onBegin,
@@ -338,6 +339,7 @@ function Intro({
 }: {
   ex: Exercise
   rx: Prescription
+  brief: boolean
   lowerSeconds?: number
   weekNote?: string
   onBegin: () => void
@@ -347,12 +349,26 @@ function Intro({
   const [have, setHave] = useState<Set<string>>(new Set())
   return (
     <>
-      <ol className="steps">
-        {ex.steps.map((s) => (
-          <li key={s}>{s}</li>
-        ))}
-      </ol>
-      <p className="cue-line">{ex.note}</p>
+      {brief ? (
+        <details className="disclosure">
+          <summary>Steps</summary>
+          <ol className="steps">
+            {ex.steps.map((s) => (
+              <li key={s}>{s}</li>
+            ))}
+          </ol>
+          <p className="cue-line">{ex.note}</p>
+        </details>
+      ) : (
+        <>
+          <ol className="steps">
+            {ex.steps.map((s) => (
+              <li key={s}>{s}</li>
+            ))}
+          </ol>
+          <p className="cue-line">{ex.note}</p>
+        </>
+      )}
       {weekNote && <p className="week-card-text week-note">{weekNote}</p>}
       {lowerSeconds && <p className="label">Lower over {lowerSeconds} seconds</p>}
 
