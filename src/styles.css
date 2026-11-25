@@ -878,3 +878,4 @@ a { color: var(--text); text-underline-offset: 3px; }
 .checkin-link { display: flex; margin-top: 4px; }
 .player .checkin { border: 0; padding: 0; }
 .player .checkin > .label:first-child { display: none; }
+

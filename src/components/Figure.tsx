@@ -106,14 +106,26 @@ function Joint({ at, r = 2.6, tone }: { at?: P; r?: number; tone: Tone }) {
   return <circle cx={at[0]} cy={at[1]} r={r} className={`fig-joint ${tone}`} />
 }
 
-/** Simple mitt, pointing along the forearm. */
-function Glove({ wrist, elbow, tone }: { wrist?: P; elbow?: P; tone: Tone }) {
+/**
+ * Simple mitt, pointing along the forearm. The thumb sits on the front of
+ * the hand: forward when the arm hangs, up when it reaches forward, back
+ * when it is overhead. In front view, thumbs point up.
+ */
+function Glove({ wrist, elbow, tone, dir, front }: { wrist?: P; elbow?: P; tone: Tone; dir: 1 | -1; front: boolean }) {
   if (!wrist || !elbow) return null
   const an = Math.atan2(wrist[1] - elbow[1], wrist[0] - elbow[0])
-  const c: P = [wrist[0] + Math.cos(an) * 6, wrist[1] + Math.sin(an) * 6]
+  const dx = Math.cos(an)
+  const dy = Math.sin(an)
+  const c: P = [wrist[0] + dx * 6, wrist[1] + dy * 6]
+  // Where the thumb should point.
+  let thumb: P = dir === 1 ? [dy, -dx] : [-dy, dx]
+  if (front) thumb = dx >= 0 ? [dy, -dx] : [-dy, dx]
+  // The mitt's thumb is drawn on its local +y side; flip it if that is the wrong side.
+  const localY: P = [-dy, dx]
+  const flip = thumb[0] * localY[0] + thumb[1] * localY[1] < 0
   return (
     <path
-      transform={`translate(${c[0].toFixed(1)},${c[1].toFixed(1)}) rotate(${((an * 180) / Math.PI).toFixed(1)})`}
+      transform={`translate(${c[0].toFixed(1)},${c[1].toFixed(1)}) rotate(${((an * 180) / Math.PI).toFixed(1)})${flip ? ' scale(1,-1)' : ''}`}
       d="M-3.5,-3.2 L2.8,-3.2 Q4.2,-3.2 4.2,-1.6 L4.2,1.8 Q4.2,3.4 2.6,3.4 L-3.5,3.4 Z M-0.6,3.4 L1.6,6.2"
       className={`fig-shape ${tone}`}
     />
@@ -166,7 +178,7 @@ function Body({ def, pose }: { def: FigureDef; pose: Pose }) {
       <Joint at={p.knee2} tone={tone('thigh2')} />
       <Seg a={sh2} b={p.elbow2} tone={tone('uarm2')} />
       <Seg a={p.elbow2} b={p.hand2} tone={tone('farm2')} />
-      <Glove wrist={p.hand2} elbow={p.elbow2} tone={tone('farm2')} />
+      <Glove wrist={p.hand2} elbow={p.elbow2} tone={tone('farm2')} dir={dir} front={front} />
       <Joint at={p.elbow2} tone={tone('uarm2')} />
       <Joint at={p.hand2} r={2.2} tone={tone('farm2')} />
 
@@ -189,7 +201,7 @@ function Body({ def, pose }: { def: FigureDef; pose: Pose }) {
       {/* Near arm, in front of everything */}
       <Seg a={sh} b={p.elbow} tone={tone('uarm')} />
       <Seg a={p.elbow} b={p.hand} tone={tone('farm')} />
-      <Glove wrist={p.hand} elbow={p.elbow} tone={tone('farm')} />
+      <Glove wrist={p.hand} elbow={p.elbow} tone={tone('farm')} dir={dir} front={front} />
       <Joint at={sh} r={3} tone={tone('uarm')} />
       <Joint at={p.elbow} tone={tone('uarm')} />
       <Joint at={p.hand} r={2.2} tone={tone('farm')} />
