@@ -130,3 +130,21 @@ export function arrowHead(from: P, to: P, size = 5): string {
   const r: P = [to[0] - size * Math.cos(ang + 0.5), to[1] - size * Math.sin(ang + 0.5)]
   return `M${l[0]},${l[1]}L${to[0]},${to[1]}L${r[0]},${r[1]}`
 }
+
+/** Points of a rotation arc around a joint, following another joint's swing from start to end. */
+export function arcPoints(def: FigureDef, arc: { around: Joint; of: Joint; r: number }, center: P, steps = 24): P[] {
+  const { a, b } = def
+  const ca = a[arc.around]
+  const cb = b[arc.around] ?? ca
+  const pa = a[arc.of]
+  const pb = b[arc.of] ?? pa
+  if (!ca || !cb || !pa || !pb) return []
+  const angA = Math.atan2(pa[1] - ca[1], pa[0] - ca[0])
+  const angB = Math.atan2(pb[1] - cb[1], pb[0] - cb[0])
+  const pts: P[] = []
+  for (let i = 0; i <= steps; i++) {
+    const ang = lerpAngle(angA, angB, i / steps)
+    pts.push([center[0] + Math.cos(ang) * arc.r, center[1] + Math.sin(ang) * arc.r])
+  }
+  return pts
+}

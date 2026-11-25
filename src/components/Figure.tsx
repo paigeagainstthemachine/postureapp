@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from 'react'
 import type { Exercise } from '../data'
 import { figureDefs } from '../figures/defs'
-import { arrowHead, bones, cycleAt, poseAt, trailPoints } from '../figures/render'
-import type { FigureDef, P, Pose, Prop } from '../figures/types'
+import { arcPoints, arrowHead, bones, cycleAt, poseAt, trailPoints } from '../figures/render'
+import type { FigureDef, P, Pose, Prop, Segment } from '../figures/types'
 
-const HEAD_R = 7
+const HEAD_R = 8
 
 function useReducedMotion() {
   const [reduced, setReduced] = useState(() => matchMedia('(prefers-reduced-motion: reduce)').matches)
@@ -74,27 +74,125 @@ function Props({ props, pose }: { props: Prop[]; pose: Pose }) {
   )
 }
 
-function Body({ def, pose, ghost }: { def: FigureDef; pose: Pose; ghost?: boolean }) {
-  const list = bones(pose)
-  const headActive = def.active.includes('head')
-  const line = (b: (typeof list)[number]) => {
-    const far = !def.front && /2$/.test(b.key)
-    const cls = ghost ? '' : def.active.includes(b.key) ? 'fig-active' : far ? 'fig-far' : 'fig-body'
-    return <line key={b.key} x1={b.a[0]} y1={b.a[1]} x2={b.b[0]} y2={b.b[1]} className={cls} />
-  }
-  // The near arm draws in front of the head (it crosses the face in face pulls and Y raises).
-  const nearArm = (k: string) => k === 'uarm' || k === 'farm'
+type Tone = 'on' | 'far' | ''
+
+const pts = (ps: P[]) => ps.map((p) => `${p[0].toFixed(1)},${p[1].toFixed(1)}`).join(' ')
+
+/** Box around a segment, wa wide at a and wb wide at b (half widths). */
+function quad(a: P, b: P, wa: number, wb: number): P[] {
+  const an = Math.atan2(b[1] - a[1], b[0] - a[0])
+  const nx = -Math.sin(an)
+  const ny = Math.cos(an)
+  return [
+    [a[0] + nx * wa, a[1] + ny * wa],
+    [b[0] + nx * wb, b[1] + ny * wb],
+    [b[0] - nx * wb, b[1] - ny * wb],
+    [a[0] - nx * wa, a[1] - ny * wa],
+  ]
+}
+
+const toward = (a: P, b: P, d: number): P => {
+  const l = Math.hypot(b[0] - a[0], b[1] - a[1]) || 1
+  return [a[0] + ((b[0] - a[0]) / l) * d, a[1] + ((b[1] - a[1]) / l) * d]
+}
+
+function Seg({ a, b, tone }: { a?: P; b?: P; tone: Tone }) {
+  if (!a || !b) return null
+  return <line x1={a[0]} y1={a[1]} x2={b[0]} y2={b[1]} className={`fig-line ${tone}`} />
+}
+
+function Joint({ at, r = 2.6, tone }: { at?: P; r?: number; tone: Tone }) {
+  if (!at) return null
+  return <circle cx={at[0]} cy={at[1]} r={r} className={`fig-joint ${tone}`} />
+}
+
+/** Simple mitt, pointing along the forearm. */
+function Glove({ wrist, elbow, tone }: { wrist?: P; elbow?: P; tone: Tone }) {
+  if (!wrist || !elbow) return null
+  const an = Math.atan2(wrist[1] - elbow[1], wrist[0] - elbow[0])
+  const c: P = [wrist[0] + Math.cos(an) * 6, wrist[1] + Math.sin(an) * 6]
   return (
-    <g className={ghost ? 'fig-ghost' : undefined}>
-      {list.filter((b) => !nearArm(b.key)).map(line)}
-      <circle
-        cx={pose.head[0]}
-        cy={pose.head[1]}
-        r={HEAD_R}
-        className={ghost ? 'fig-head-ghost' : headActive ? 'fig-head fig-head-active' : 'fig-head'}
-      />
-      {def.gaze && !ghost && <Gaze head={pose.head} dir={def.gaze === 'right' ? 1 : -1} />}
-      {list.filter((b) => nearArm(b.key)).map(line)}
+    <path
+      transform={`translate(${c[0].toFixed(1)},${c[1].toFixed(1)}) rotate(${((an * 180) / Math.PI).toFixed(1)})`}
+      d="M-3.5,-3.2 L2.8,-3.2 Q4.2,-3.2 4.2,-1.6 L4.2,1.8 Q4.2,3.4 2.6,3.4 L-3.5,3.4 Z M-0.6,3.4 L1.6,6.2"
+      className={`fig-shape ${tone}`}
+    />
+  )
+}
+
+/** Dashed outline of the start pose, for still figures. */
+function Ghost({ pose }: { pose: Pose }) {
+  return (
+    <g className="fig-ghost">
+      {bones(pose).map((b) => (
+        <line key={b.key} x1={b.a[0]} y1={b.a[1]} x2={b.b[0]} y2={b.b[1]} />
+      ))}
+      <circle cx={pose.head[0]} cy={pose.head[1]} r={HEAD_R} />
+    </g>
+  )
+}
+
+/**
+ * Jointed mannequin: outlined torso and hips, thin limbs, hollow joints,
+ * glove hands. The moving limbs and their joints are red.
+ */
+function Body({ def, pose }: { def: FigureDef; pose: Pose }) {
+  const tone = (seg: Segment): Tone => (def.active.includes(seg) ? 'on' : !def.front && /2$/.test(seg) ? 'far' : '')
+  const p = pose
+  const dir = def.facing === 'left' ? -1 : 1
+  const front = Boolean(def.front)
+
+  // Shoulders: their own joints in front view, just below the neck in side view.
+  const sh = p.sh ?? toward(p.neck, p.hip, 3)
+  const sh2 = p.sh2 ?? sh
+  const waist = toward(p.hip, p.neck, 3)
+  const torso = quad(waist, p.neck, front ? 8 : 5, front ? 11 : 7)
+  const pelvis = quad(toward(p.hip, p.neck, -3.5), toward(p.hip, p.neck, 4), front ? 9 : 6.5, front ? 9 : 6.5)
+
+  const foot = (knee?: P, ankle?: P, t: Tone = '') => {
+    if (!knee || !ankle) return null
+    if (Math.abs(ankle[0] - knee[0]) > Math.abs(ankle[1] - knee[1])) return null // shin lying flat
+    return <Seg a={ankle} b={[ankle[0] + dir * 6, ankle[1]]} tone={t} />
+  }
+  const headTone: Tone = def.active.includes('head') ? 'on' : ''
+  const neckBase = toward(p.head, p.neck, HEAD_R)
+
+  return (
+    <g>
+      {/* Far side */}
+      <Seg a={p.hip} b={p.knee2} tone={tone('thigh2')} />
+      <Seg a={p.knee2} b={p.foot2} tone={tone('shin2')} />
+      {foot(p.knee2, p.foot2, tone('shin2'))}
+      <Joint at={p.knee2} tone={tone('thigh2')} />
+      <Seg a={sh2} b={p.elbow2} tone={tone('uarm2')} />
+      <Seg a={p.elbow2} b={p.hand2} tone={tone('farm2')} />
+      <Glove wrist={p.hand2} elbow={p.elbow2} tone={tone('farm2')} />
+      <Joint at={p.elbow2} tone={tone('uarm2')} />
+      <Joint at={p.hand2} r={2.2} tone={tone('farm2')} />
+
+      {/* Near legs */}
+      <Seg a={p.hip} b={p.knee} tone={tone('thigh')} />
+      <Seg a={p.knee} b={p.foot} tone={tone('shin')} />
+      {foot(p.knee, p.foot, tone('shin'))}
+      <Joint at={p.knee} tone={tone('thigh')} />
+      <Joint at={p.foot} r={2.2} tone={tone('shin')} />
+
+      {/* Torso, hips, head */}
+      <polygon points={pts(torso)} className={`fig-shape ${tone('torso')}`} />
+      <polygon points={pts(pelvis)} className={`fig-shape ${tone('torso')}`} />
+      <Joint at={p.hip} r={2.4} tone={tone('thigh')} />
+      <Seg a={p.neck} b={neckBase} tone={headTone} />
+      <circle cx={p.head[0]} cy={p.head[1]} r={HEAD_R} className={`fig-shape ${headTone}`} />
+      {def.gaze && <Gaze head={p.head} dir={def.gaze === 'right' ? 1 : -1} />}
+      {front && <Joint at={sh2} r={3} tone={tone('uarm2')} />}
+
+      {/* Near arm, in front of everything */}
+      <Seg a={sh} b={p.elbow} tone={tone('uarm')} />
+      <Seg a={p.elbow} b={p.hand} tone={tone('farm')} />
+      <Glove wrist={p.hand} elbow={p.elbow} tone={tone('farm')} />
+      <Joint at={sh} r={3} tone={tone('uarm')} />
+      <Joint at={p.elbow} tone={tone('uarm')} />
+      <Joint at={p.hand} r={2.2} tone={tone('farm')} />
     </g>
   )
 }
@@ -113,25 +211,25 @@ function Gaze({ head, dir }: { head: P; dir: 1 | -1 }) {
   )
 }
 
-function Trails({ def, faint }: { def: FigureDef; faint?: boolean }) {
+/** Red arrows: arcs around rotating joints, straight arrows for slides. */
+function Arrows({ def, pose }: { def: FigureDef; pose: Pose }) {
+  const paths: { pts: P[]; both?: boolean }[] = []
+  for (const arc of def.arcs ?? []) {
+    const c = pose[arc.around]
+    if (c) paths.push({ pts: arcPoints(def, arc, c) })
+  }
+  for (const tr of def.trails) paths.push({ pts: trailPoints(def, tr), both: tr.both })
   return (
-    <g className={faint ? 'fig-trail faint' : 'fig-trail'}>
-      {def.trails.map((tr, i) => {
-        const pts = trailPoints(def, tr)
-        if (pts.length < 2) return null
-        const d = pts.map((p, k) => `${k ? 'L' : 'M'}${p[0].toFixed(1)},${p[1].toFixed(1)}`).join('')
-        const end = pts[pts.length - 1]
-        const before = pts[pts.length - 3] ?? pts[0]
-        const start = pts[0]
-        const after = pts[2] ?? pts[1]
-        return (
+    <g className="fig-arrow">
+      {paths.map(({ pts: ps, both }, i) =>
+        ps.length < 3 ? null : (
           <g key={i}>
-            <path d={d} className="fig-trail-line" />
-            <path d={arrowHead(before as P, end)} className="fig-trail-head" />
-            {tr.both && <path d={arrowHead(after as P, start)} className="fig-trail-head" />}
+            <path d={'M' + pts(ps).replaceAll(' ', 'L')} />
+            <path d={arrowHead(ps[ps.length - 3], ps[ps.length - 1], 4.5)} />
+            {both && <path d={arrowHead(ps[2], ps[0], 4.5)} />}
           </g>
-        )
-      })}
+        ),
+      )}
     </g>
   )
 }
@@ -158,9 +256,9 @@ export function Figure({ exercise, size = 'large' }: { exercise: Exercise; size?
     return (
       <svg className={`figure figure-${size}`} viewBox={viewBox} aria-hidden="true">
         <Props props={def.props} pose={poseB} />
-        <Body def={def} pose={ghostA} ghost />
-        <Trails def={def} />
+        <Ghost pose={ghostA} />
         <Body def={def} pose={poseB} />
+        <Arrows def={def} pose={poseB} />
       </svg>
     )
   }
@@ -173,8 +271,8 @@ export function Figure({ exercise, size = 'large' }: { exercise: Exercise; size?
     <div className="figure-anim">
       <svg className={`figure figure-${size}`} viewBox={viewBox} aria-hidden="true">
         <Props props={def.props} pose={pose} />
-        <Trails def={def} faint />
         <Body def={def} pose={pose} />
+        <Arrows def={def} pose={pose} />
       </svg>
       <div className="figure-caption">
         <span className="label figure-phase" aria-hidden="true">

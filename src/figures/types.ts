@@ -51,6 +51,13 @@ export interface Trail {
   both?: boolean
 }
 
+/** Red rotation arrow: an arc around one joint, following another joint's swing. */
+export interface Arc {
+  around: Joint
+  of: Joint
+  r: number
+}
+
 export interface FigureDef {
   /** Start position. */
   a: Pose
@@ -59,7 +66,12 @@ export interface FigureDef {
   props: Prop[]
   /** Segments drawn in signal red: the part that moves. */
   active: Segment[]
+  /** Straight arrows for movements that slide rather than rotate. */
   trails: Trail[]
+  /** Curved arrows around the joints that rotate. */
+  arcs?: Arc[]
+  /** Which way the figure faces, for the feet. */
+  facing?: 'left' | 'right'
   /** Seconds: move to end, hold, move back, rest. */
   timing: [number, number, number, number]
   /** Words shown for each of the four timing phases. */
