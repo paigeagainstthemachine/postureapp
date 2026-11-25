@@ -1,12 +1,15 @@
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db, useSettings, type SetLog } from '../db'
-import { exercises, getExercise } from '../data'
-import { addDays, dateKey, fromKey, planFor, shortDate, weekStart } from '../lib/plan'
+import { exercises, getExercise, phase2 } from '../data'
+import { addDays, counted, dateKey, dayPlan, fromKey, progressionOn, shortDate, weekStart } from '../lib/plan'
 import { PainChart } from '../components/PainChart'
+import { EightWeekGrid } from '../components/EightWeekGrid'
+import { WeekCard } from '../components/WeekCard'
 
 const TREND_DAYS = 56
 const dayLetters = ['M', 'T', 'W', 'T', 'F', 'S', 'S']
 const pad2 = (n: number) => String(n).padStart(2, '0')
+
 
 function doneOn(logs: SetLog[], key: string): Set<string> {
   return new Set(logs.filter((l) => l.date === key && !l.skipped && l.source !== 'quick').map((l) => l.exerciseId))
@@ -24,7 +27,7 @@ export function Progress() {
   const week = Array.from({ length: 7 }, (_, i) => {
     const d = addDays(monday, i)
     const key = dateKey(d)
-    const plan = planFor(settings.phase, d)
+    const plan = counted(dayPlan(settings.phase, d).items)
     const done = doneOn(logs, key)
     return {
       key,
@@ -37,6 +40,8 @@ export function Progress() {
   const activeDays = week.filter((w) => w.done > 0).length
   const weekKeys = new Set(week.map((w) => w.key))
   const quickThisWeek = new Set(logs.filter((l) => l.source === 'quick' && weekKeys.has(l.date)).map((l) => l.sessionId)).size
+
+  const progression = progressionOn(settings.phase, settings.phase2StartDate, now)
 
   // ----- Symptoms over the trend window -----
   const startKey = dateKey(addDays(now, -(TREND_DAYS - 1)))
@@ -96,6 +101,14 @@ export function Progress() {
         </div>
         {activeDays > 0 && <p className="muted">Every day you show up counts.</p>}
       </section>
+
+      {progression && settings.phase2StartDate && (
+        <section aria-labelledby="p2-h">
+          <h2 id="p2-h">Phase 2</h2>
+          <WeekCard p={progression} extra={phase2.flare_rule} />
+          <EightWeekGrid logs={logs} startKey={settings.phase2StartDate} currentWeek={progression.week} />
+        </section>
+      )}
 
       <section aria-labelledby="pain-h">
         <h2 id="pain-h">Right neck and shoulder pain</h2>

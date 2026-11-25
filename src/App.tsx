@@ -5,9 +5,10 @@ import { Equipment } from './screens/Equipment'
 import { Today } from './screens/Today'
 import { Session } from './screens/Session'
 import { Progress } from './screens/Progress'
+import { Settings } from './screens/Settings'
 
 const tabs: { label: string; route: Route; match: Route['name'][] }[] = [
-  { label: 'Today', route: { name: 'today' }, match: ['today'] },
+  { label: 'Today', route: { name: 'today' }, match: ['today', 'settings'] },
   { label: 'Progress', route: { name: 'progress' }, match: ['progress'] },
   { label: 'Library', route: { name: 'library' }, match: ['library', 'exercise', 'equipment'] },
 ]
@@ -23,6 +24,7 @@ export function App() {
         {route.name === 'session' && <Session />}
         {route.name === 'quick' && <Session quickId={route.id} />}
         {route.name === 'progress' && <Progress />}
+        {route.name === 'settings' && <Settings />}
         {route.name === 'library' && <Library />}
         {route.name === 'exercise' && <ExerciseDetail id={route.id} />}
         {route.name === 'equipment' && <Equipment />}

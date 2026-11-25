@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { db, lastLoad, useLogsForDate, useSettings, type Effort, type SetLog } from '../db'
 import { formatDose, getExercise, phase1, type Exercise, type PhaseId, type Prescription } from '../data'
-import { dateKey, kindOf, parseCount, planFor, sidesFor } from '../lib/plan'
+import { dateKey, dayPlan, effectiveRx, kindOf, parseCount, planFor, progressionOn, sidesFor } from '../lib/plan'
 import { cue, unlockAudio, useWakeLock } from '../lib/cues'
 import { useNow } from '../lib/useNow'
 import { Figure } from '../components/Figure'
@@ -13,6 +13,7 @@ const AUTO_LIFT_SECONDS = 1.5
 const AUTO_DEFAULT_LOWER_SECONDS = 1.5
 
 type Step =
+  | { t: 'warmup'; text: string }
   | { t: 'intro' }
   | { t: 'work' }
   | { t: 'log'; reps: number; holdSeconds?: number }
@@ -48,7 +49,7 @@ export function Session({ quickId }: { quickId?: string }) {
   // Build the queue once: today's plan minus what is already done, or everything if all done.
   const [queue, setQueue] = useState<Exercise[] | null>(null)
   useEffect(() => {
-    if (queue) return
+    if (queue || !settings.loaded) return
     if (quickId) {
       const ex = getExercise(quickId)
       setQueue(ex ? [ex] : [])
@@ -59,8 +60,10 @@ export function Session({ quickId }: { quickId?: string }) {
       const plan = planFor(phase, new Date())
       const left = plan.filter((e) => !done.has(e.id))
       setQueue(left.length ? left : plan)
+      const warmup = dayPlan(phase, new Date()).warmup
+      if (warmup) setStep({ t: 'warmup', text: warmup })
     })
-  }, [queue, quickId, phase, today])
+  }, [queue, quickId, phase, today, settings.loaded])
 
   const [pos, setPos] = useState<Pos>({ ex: 0, set: 0, side: 0 })
   const [step, setStep] = useState<Step>(quickId ? { t: 'work' } : { t: 'intro' })
@@ -122,7 +125,9 @@ export function Session({ quickId }: { quickId?: string }) {
   }
 
   const ex = queue[pos.ex]
-  const rx = ex?.rx[phase] as Prescription | undefined
+  const progression = progressionOn(phase, settings.phase2StartDate, new Date())
+  const rx = ex ? effectiveRx(ex, phase, progression) : undefined
+  const lowerSeconds = ex?.tempo?.lowering_seconds ?? progression?.lowerSeconds
   const sides = rx ? sidesFor(rx) : [undefined]
   const side = sides[pos.side]
 
@@ -240,8 +245,20 @@ export function Session({ quickId }: { quickId?: string }) {
         </span>
       </p>
 
+      {step.t === 'warmup' && (
+        <>
+          <div className="readout">
+            <p className="readout-word">Warm up</p>
+            <p className="warmup-text">{step.text}</p>
+          </div>
+          <div className="bottom-action player-actions">
+            <button className="btn-primary" onClick={() => setStep({ t: 'intro' })}>Ready ▶</button>
+          </div>
+        </>
+      )}
+
       {step.t === 'intro' && (
-        <Intro ex={ex} rx={rx} onBegin={() => { unlockAudio(); void ensureSession(); setStep({ t: 'work' }) }} onSkip={skip} onLater={queue.length - pos.ex > 1 ? doLater : undefined} />
+        <Intro ex={ex} rx={rx} lowerSeconds={kind === 'reps' ? lowerSeconds : undefined} weekNote={pos.ex === 0 ? progression?.change : undefined} onBegin={() => { unlockAudio(); void ensureSession(); setStep({ t: 'work' }) }} onSkip={skip} onLater={queue.length - pos.ex > 1 ? doLater : undefined} />
       )}
 
       {step.t === 'work' && kind !== 'spots' && (
@@ -266,7 +283,7 @@ export function Session({ quickId }: { quickId?: string }) {
         <RepCounter
           key={`${pos.ex}-${pos.set}-${pos.side}`}
           target={reps}
-          lowerSeconds={ex.tempo?.lowering_seconds}
+          lowerSeconds={lowerSeconds}
           onDone={(n) => onWorkDone(n)}
         />
       )}
@@ -291,6 +308,7 @@ export function Session({ quickId }: { quickId?: string }) {
           next={`Set ${pos.set + 1}/${rx.sets}`}
           onAdjust={(d) => setStep({ t: 'rest', endsAt: Math.max(Date.now() + 5000, step.endsAt + d * 1000) })}
           onSkip={() => setStep({ t: 'work' })}
+          onMoveOn={nextExercise}
         />
       )}
 
@@ -312,12 +330,16 @@ export function Session({ quickId }: { quickId?: string }) {
 function Intro({
   ex,
   rx,
+  lowerSeconds,
+  weekNote,
   onBegin,
   onSkip,
   onLater,
 }: {
   ex: Exercise
   rx: Prescription
+  lowerSeconds?: number
+  weekNote?: string
   onBegin: () => void
   onSkip: () => void
   onLater?: () => void
@@ -331,7 +353,8 @@ function Intro({
         ))}
       </ol>
       <p className="cue-line">{ex.note}</p>
-      {ex.tempo && <p className="label">Lower over {ex.tempo.lowering_seconds} seconds</p>}
+      {weekNote && <p className="week-card-text week-note">{weekNote}</p>}
+      {lowerSeconds && <p className="label">Lower over {lowerSeconds} seconds</p>}
 
       <p className="label equip-label">You need</p>
       <ul className="equip-checks">
@@ -653,7 +676,19 @@ function LogSet({
   )
 }
 
-function Rest({ left, next, onAdjust, onSkip }: { left: number; next: string; onAdjust: (d: number) => void; onSkip: () => void }) {
+function Rest({
+  left,
+  next,
+  onAdjust,
+  onSkip,
+  onMoveOn,
+}: {
+  left: number
+  next: string
+  onAdjust: (d: number) => void
+  onSkip: () => void
+  onMoveOn: () => void
+}) {
   return (
     <>
       <div className="readout" aria-live="polite">
@@ -669,6 +704,7 @@ function Rest({ left, next, onAdjust, onSkip }: { left: number; next: string; on
           <button className="btn-quiet" onClick={() => onAdjust(15)}>+15</button>
           <button className="btn-quiet" onClick={onSkip}>Skip rest</button>
         </div>
+        <button className="btn-quiet wide" onClick={onMoveOn}>Enough sets, next exercise</button>
       </div>
     </>
   )

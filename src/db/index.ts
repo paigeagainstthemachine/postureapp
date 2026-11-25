@@ -88,9 +88,10 @@ export const db = new PostureDB()
 // Ask the browser not to evict our data under storage pressure. Best effort.
 navigator.storage?.persist?.().catch(() => {})
 
-export function useSettings(): Settings {
-  const s = useLiveQuery(() => db.settings.get('settings'))
-  return { ...defaultSettings, ...s }
+/** Settings merged over defaults. `loaded` is false until IndexedDB has answered. */
+export function useSettings(): Settings & { loaded: boolean } {
+  const s = useLiveQuery(() => db.settings.get('settings').then((r) => r ?? null))
+  return { ...defaultSettings, ...s, loaded: s !== undefined }
 }
 
 export async function updateSettings(patch: Partial<Omit<Settings, 'id'>>) {

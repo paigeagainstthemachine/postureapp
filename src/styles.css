@@ -659,3 +659,53 @@ a { color: var(--text); text-underline-offset: 3px; }
 .data-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 12px; }
 .data-table th { text-align: left; font-weight: 400; color: var(--grey); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; padding: 4px 6px 4px 0; }
 .data-table td { padding: 6px 6px 6px 0; border-top: 1px solid var(--line); }
+
+/* ---------- Settings ---------- */
+.flush { margin-top: 0; }
+.wide { width: 100%; min-height: 56px; }
+.question { margin: 16px 0 6px; font-weight: 600; }
+.small { font-size: 14px; margin-top: 6px; }
+.spaced { margin-top: 16px; }
+.card .field { margin-top: 12px; }
+.field input[type='date'] { color-scheme: dark; }
+.label-link { color: var(--grey); text-decoration: none; }
+.label-link::after { content: ' ›'; }
+
+/* ---------- Phase 2 ---------- */
+.week-card { margin: 0 0 16px; padding: 12px; border: 2px solid var(--text); }
+.week-card .label { display: flex; justify-content: space-between; margin: 0 0 6px; }
+.week-card .side { margin: 0 0 8px; }
+.week-card-text { margin: 0; }
+.warmup { margin: 0 0 8px; }
+.warmup .label { margin-right: 8px; }
+.warmup-text { font-size: 20px; max-width: 28ch; }
+.week-note { margin-top: 12px; padding: 10px 12px; border-left: 3px solid var(--text); }
+
+.grid8-wrap { overflow-x: auto; margin-top: 12px; }
+.grid8 { width: 100%; border-collapse: collapse; font-family: var(--font-mono); font-size: 11px; }
+.grid8 th { font-weight: 400; color: var(--grey); padding: 2px; }
+.grid8 thead th.is-now { color: var(--text); text-decoration: underline; text-underline-offset: 3px; }
+.grid8 .grid8-name {
+  text-align: left;
+  font-family: var(--font-display);
+  font-size: 14px;
+  text-transform: uppercase;
+  color: var(--text);
+  line-height: 1.05;
+  padding: 4px 6px 4px 0;
+  max-width: 120px;
+}
+.grid8 td { padding: 2px; text-align: center; }
+.g-box {
+  display: inline-grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border: 1px solid var(--line-strong);
+  color: var(--bg);
+  font-size: 13px;
+}
+.g-box.on { background: var(--text); border-color: var(--text); }
+.g-box.big { width: 26px; height: 26px; border-width: 2px; color: var(--grey); }
+.g-box.big.on { color: var(--bg); }
+.grid8-total th, .grid8-total td { border-top: 1px solid var(--line-strong); padding-top: 6px; }

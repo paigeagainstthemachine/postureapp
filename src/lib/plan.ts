@@ -34,6 +34,87 @@ export function planFor(phase: PhaseId, d: Date): Exercise[] {
   return list.filter((e) => !seen.has(e.id) && seen.add(e.id) && allowedInPhase(e, phase))
 }
 
+/** A row on Today: an exercise, or a walk (walks are not in exercises.json). */
+export type PlanItem =
+  | { kind: 'exercise'; id: string; ex: Exercise }
+  | { kind: 'walk'; id: 'walk'; minutes?: string; optional: boolean }
+
+export type DayType = 'daily' | 'strength' | 'walk' | 'optional_walk' | 'rest'
+
+export interface DayPlan {
+  type: DayType
+  items: PlanItem[]
+  warmup?: string
+}
+
+export const WALK_ID = 'walk'
+
+export function dayPlan(phase: PhaseId, d: Date): DayPlan {
+  const exItems = planFor(phase, d).map((ex) => ({ kind: 'exercise' as const, id: ex.id, ex }))
+  if (phase === 'phase1') return { type: 'daily', items: exItems }
+  const entry = phase2.schedule[weekdayOf(d)]
+  const items: PlanItem[] = [...exItems]
+  if (entry.type === 'walk') items.unshift({ kind: 'walk', id: 'walk', minutes: entry.minutes, optional: false })
+  if (entry.type === 'optional_walk') items.unshift({ kind: 'walk', id: 'walk', optional: true })
+  return { type: entry.type, items, warmup: entry.type === 'strength' ? phase2.warmup : undefined }
+}
+
+/** Items that count toward "done today". An optional walk is a bonus, not a target. */
+export function counted(items: PlanItem[]): PlanItem[] {
+  return items.filter((i) => !(i.kind === 'walk' && i.optional))
+}
+
+// ---------- Phase 2 progression ----------
+
+/** Week number (1-based) since Phase 2 started, or undefined before it starts. */
+export function phase2Week(startKey: string | undefined, d: Date): number | undefined {
+  if (!startKey) return undefined
+  const days = daysBetween(fromKey(startKey), new Date(d.getFullYear(), d.getMonth(), d.getDate(), 12))
+  return days < 0 ? undefined : Math.floor(days / 7) + 1
+}
+
+export interface Progression {
+  week: number
+  weeks: string
+  change: string
+  /** This week is a step up in load, per the progression table. */
+  stepUp: boolean
+  /** "2 sets of everything" caps sets this block. */
+  setsCap?: number
+  /** "3 seconds lowering on every rep" sets the auto pace tempo this block. */
+  lowerSeconds?: number
+}
+
+/**
+ * Reads the progression table in program.json. Effects are taken from the
+ * table's own words, so editing the data changes the behaviour.
+ */
+export function progressionFor(week: number): Progression {
+  const blocks = phase2.progression.map((p) => {
+    const [a, b] = p.weeks.split('-').map(Number)
+    return { ...p, from: a, to: b ?? a }
+  })
+  const block = blocks.find((b) => week >= b.from && week <= b.to) ?? blocks[blocks.length - 1]
+  const stepsUp = /move up|step up/i.test(block.change)
+  const sets = block.change.match(/(\d+) sets of everything/i)
+  const lower = block.change.match(/(\d+) seconds lowering/i)
+  return {
+    week,
+    weeks: block.weeks,
+    change: block.change,
+    // Step up at the start of the block, then every 2 weeks within it.
+    stepUp: stepsUp && (week - block.from) % 2 === 0,
+    setsCap: sets ? Number(sets[1]) : undefined,
+    lowerSeconds: lower ? Number(lower[1]) : undefined,
+  }
+}
+
+/** Exercises that only happen on strength days, used to tell a strength day was done. */
+export function strengthOnlyIds(): Set<string> {
+  const other = new Set(Object.values(phase2.schedule).flatMap((d) => d.items ?? []))
+  return new Set(phase2.strength_day.filter((id) => !other.has(id)))
+}
+
 export type Kind = 'hold' | 'reps' | 'spots'
 
 export function kindOf(rx: Prescription): Kind {
@@ -85,4 +166,22 @@ export function shortDate(d: Date): string {
 /** Whole days from a to b. */
 export function daysBetween(a: Date, b: Date): number {
   return Math.round((b.getTime() - a.getTime()) / 86400000)
+}
+
+/**
+ * The prescription to use today: the data's rx, with the Phase 2 progression
+ * block applied (for example "2 sets of everything" in weeks 1-2).
+ */
+export function effectiveRx(ex: Exercise, phase: PhaseId, progression?: Progression): Prescription | undefined {
+  const rx = ex.rx[phase]
+  if (!rx) return undefined
+  if (phase === 'phase2' && progression?.setsCap) return { ...rx, sets: Math.min(rx.sets, progression.setsCap) }
+  return rx
+}
+
+/** Progression for a date, or undefined outside Phase 2. */
+export function progressionOn(phase: PhaseId, phase2StartDate: string | undefined, d: Date): Progression | undefined {
+  if (phase !== 'phase2') return undefined
+  const week = phase2Week(phase2StartDate, d)
+  return week ? progressionFor(week) : undefined
 }
