@@ -158,8 +158,9 @@ function Body({ def, pose }: { def: FigureDef; pose: Pose }) {
   const sh = p.sh ?? toward(p.neck, p.hip, 3)
   const sh2 = p.sh2 ?? sh
   const waist = toward(p.hip, p.neck, 3)
-  const torso = quad(waist, p.neck, front ? 8 : 5, front ? 11 : 7)
-  const pelvis = quad(toward(p.hip, p.neck, -3.5), toward(p.hip, p.neck, 4), front ? 9 : 6.5, front ? 9 : 6.5)
+  const wide = front || Boolean(def.wide)
+  const torso = quad(waist, p.neck, wide ? 8 : 5, wide ? 11 : 7)
+  const pelvis = quad(toward(p.hip, p.neck, -3.5), toward(p.hip, p.neck, 4), wide ? 9 : 6.5, wide ? 9 : 6.5)
 
   const foot = (knee?: P, ankle?: P, t: Tone = '') => {
     if (!knee || !ankle) return null
@@ -196,7 +197,7 @@ function Body({ def, pose }: { def: FigureDef; pose: Pose }) {
       <Seg a={p.neck} b={neckBase} tone={headTone} />
       <circle cx={p.head[0]} cy={p.head[1]} r={HEAD_R} className={`fig-shape ${headTone}`} />
       {def.gaze && <Gaze head={p.head} dir={def.gaze === 'right' ? 1 : -1} />}
-      {front && <Joint at={sh2} r={3} tone={tone('uarm2')} />}
+      {p.sh2 && <Joint at={sh2} r={3} tone={tone('uarm2')} />}
 
       {/* Near arm, in front of everything */}
       <Seg a={sh} b={p.elbow} tone={tone('uarm')} />

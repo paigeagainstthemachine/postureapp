@@ -78,6 +78,8 @@ export interface FigureDef {
   labels: [string, string, string, string]
   /** Front view: both arms are equally near, so the far side is not dimmed. */
   front?: boolean
+  /** Draw the torso at full shoulder width, e.g. lying on the side with shoulders stacked. */
+  wide?: boolean
   /** Joints that slide in a straight line instead of rotating around their parent. */
   linear?: Joint[]
   /** Draw an eye and a level line of sight, facing this way. */
