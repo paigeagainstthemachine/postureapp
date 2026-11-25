@@ -18,18 +18,8 @@ export function getExercise(id: string): Exercise | undefined {
   return byId.get(id)
 }
 
-// Figures live in /assets/figures. The app uses the dark copies in /assets/figures/dark,
-// made by scripts/make-dark-figures.mjs. Vite fingerprints them into the build.
-const figureUrls = import.meta.glob('../../assets/figures/dark/*.svg', {
-  eager: true,
-  query: '?url',
-  import: 'default',
-}) as Record<string, string>
-
-export function figureUrl(ex: Exercise): string | undefined {
-  const file = ex.figure.split('/').pop()
-  return Object.entries(figureUrls).find(([path]) => path.endsWith('/' + file))?.[1]
-}
+// Exercise figures are drawn in code from src/figures (animated poses).
+// The SVGs in /assets/figures are the original static drawings, kept for reference.
 
 /** Phases whose plan uses this exercise. */
 export function phasesUsing(ex: Exercise): PhaseId[] {

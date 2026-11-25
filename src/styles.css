@@ -709,3 +709,44 @@ a { color: var(--text); text-underline-offset: 3px; }
 .g-box.big { width: 26px; height: 26px; border-width: 2px; color: var(--grey); }
 .g-box.big.on { color: var(--bg); }
 .grid8-total th, .grid8-total td { border-top: 1px solid var(--line-strong); padding-top: 6px; }
+
+/* ---------- Figures: mannequin on a grid ---------- */
+.figure line { stroke-linecap: square; }
+.fig-body { stroke: var(--text); stroke-width: 4.5; }
+.fig-far { stroke: var(--grey); stroke-width: 4.5; }
+.fig-active { stroke: var(--red); stroke-width: 4.5; }
+.fig-head { fill: var(--panel); stroke: var(--text); stroke-width: 3.5; }
+.fig-head-active { stroke: var(--red); }
+.fig-ghost line { stroke: var(--line-strong); stroke-width: 2; stroke-dasharray: 3 3; stroke-linecap: butt; }
+.fig-head-ghost { fill: none; stroke: var(--line-strong); stroke-width: 1.5; stroke-dasharray: 3 3; }
+.fig-prop { stroke: var(--line-strong); }
+.fig-prop-fill { fill: none; stroke: var(--line-strong); stroke-width: 2; }
+.fig-prop-solid { fill: var(--line-strong); }
+.fig-band { stroke: var(--red); stroke-width: 1.5; }
+.fig-equip { fill: var(--red); }
+.fig-trail-line { fill: none; stroke: var(--red); stroke-width: 1.5; stroke-dasharray: 2 3; }
+.fig-trail-head { fill: none; stroke: var(--red); stroke-width: 1.5; stroke-linecap: square; }
+.fig-trail.faint { opacity: 0.55; }
+.figure-small { width: 72px; height: 54px; }
+.figure-large { max-height: 260px; }
+.figure-caption {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+.figure-phase { color: var(--text); min-height: 18px; }
+.figure-toggle {
+  min-height: 40px;
+  padding: 0 4px;
+  border: 0;
+  background: transparent;
+  color: var(--grey);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  white-space: nowrap;
+}

@@ -7,8 +7,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "typecheck": "tsc -b",
-    "figures:dark": "node scripts/make-dark-figures.mjs"
+    "typecheck": "tsc -b"
   },
   "dependencies": {
     "@fontsource/barlow-condensed": "^5.3.0",
