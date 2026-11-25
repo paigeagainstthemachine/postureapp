@@ -7,6 +7,8 @@ export type Route =
   | { name: 'exercise'; id: string }
   | { name: 'equipment' }
   | { name: 'progress' }
+  | { name: 'session' }
+  | { name: 'quick'; id: string }
 
 export function parseHash(hash: string): Route {
   const parts = hash.replace(/^#\/?/, '').split('/').filter(Boolean)
@@ -17,6 +19,10 @@ export function parseHash(hash: string): Route {
       return { name: 'equipment' }
     case 'progress':
       return { name: 'progress' }
+    case 'session':
+      return parts[1] === 'quick' && parts[2]
+        ? { name: 'quick', id: decodeURIComponent(parts[2]) }
+        : { name: 'session' }
     default:
       return { name: 'today' }
   }
@@ -34,6 +40,10 @@ export function href(route: Route): string {
       return '#/equipment'
     case 'progress':
       return '#/progress'
+    case 'session':
+      return '#/session'
+    case 'quick':
+      return `#/session/quick/${encodeURIComponent(route.id)}`
   }
 }
 

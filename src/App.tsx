@@ -3,6 +3,8 @@ import { Library } from './screens/Library'
 import { ExerciseDetail } from './screens/ExerciseDetail'
 import { Equipment } from './screens/Equipment'
 import { Placeholder } from './screens/Placeholder'
+import { Today } from './screens/Today'
+import { Session } from './screens/Session'
 
 const tabs: { label: string; route: Route; match: Route['name'][] }[] = [
   { label: 'Today', route: { name: 'today' }, match: ['today'] },
@@ -12,13 +14,14 @@ const tabs: { label: string; route: Route; match: Route['name'][] }[] = [
 
 export function App() {
   const route = useRoute()
+  const inSession = route.name === 'session' || route.name === 'quick'
 
   return (
     <div className="app">
-      <main className="screen">
-        {route.name === 'today' && (
-          <Placeholder title="Today" body="Today's plan and the session player arrive in milestone 2." />
-        )}
+      <main className={inSession ? 'screen screen-session' : 'screen'}>
+        {route.name === 'today' && <Today />}
+        {route.name === 'session' && <Session />}
+        {route.name === 'quick' && <Session quickId={route.id} />}
         {route.name === 'progress' && (
           <Placeholder title="Progress" body="Check-ins, pain trend and weekly sessions arrive in milestone 3." />
         )}
@@ -27,6 +30,7 @@ export function App() {
         {route.name === 'equipment' && <Equipment />}
       </main>
 
+      {!inSession && (
       <nav className="tabbar" aria-label="Main">
         {tabs.map((t) => {
           const active = t.match.includes(route.name)
@@ -37,6 +41,7 @@ export function App() {
           )
         })}
       </nav>
+      )}
     </div>
   )
 }
