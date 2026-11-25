@@ -211,7 +211,7 @@ function Gaze({ head, dir }: { head: P; dir: 1 | -1 }) {
   )
 }
 
-/** Red arrows: arcs around rotating joints, straight arrows for slides. */
+/** Grey dashed arrows: arcs around rotating joints, straight arrows for slides. */
 function Arrows({ def, pose }: { def: FigureDef; pose: Pose }) {
   const paths: { pts: P[]; both?: boolean }[] = []
   for (const arc of def.arcs ?? []) {
@@ -224,9 +224,9 @@ function Arrows({ def, pose }: { def: FigureDef; pose: Pose }) {
       {paths.map(({ pts: ps, both }, i) =>
         ps.length < 3 ? null : (
           <g key={i}>
-            <path d={'M' + pts(ps).replaceAll(' ', 'L')} />
-            <path d={arrowHead(ps[ps.length - 3], ps[ps.length - 1], 4.5)} />
-            {both && <path d={arrowHead(ps[2], ps[0], 4.5)} />}
+            <path d={'M' + pts(ps).replaceAll(' ', 'L')} className="fig-arrow-line" />
+            <path d={arrowHead(ps[ps.length - 3], ps[ps.length - 1], 4.5)} className="fig-arrow-head" />
+            {both && <path d={arrowHead(ps[2], ps[0], 4.5)} className="fig-arrow-head" />}
           </g>
         ),
       )}
