@@ -23,8 +23,8 @@
       <line x1="196" y1="262" x2="132" y2="196"/>
       <line x1="132" y1="196" x2="116" y2="110"/>
     </g>
-    <use href="#mitt" transform="translate(402 77.6) rotate(-79.5) scale(5.5)"/>
-    <use href="#mitt" transform="translate(110 77.6) rotate(-100.5) scale(5.5 -5.5)"/>
+    <use href="#mitt" transform="translate(402 77.6) rotate(-79.5) scale(5.5 -5.5)"/>
+    <use href="#mitt" transform="translate(110 77.6) rotate(-100.5) scale(5.5)"/>
 
     <g fill="#0B0B0B" stroke="#E8402F" stroke-width="10">
       <circle cx="316" cy="262" r="16"/>
