@@ -2,9 +2,9 @@ import { useRoute, href, type Route } from './router'
 import { Library } from './screens/Library'
 import { ExerciseDetail } from './screens/ExerciseDetail'
 import { Equipment } from './screens/Equipment'
-import { Placeholder } from './screens/Placeholder'
 import { Today } from './screens/Today'
 import { Session } from './screens/Session'
+import { Progress } from './screens/Progress'
 
 const tabs: { label: string; route: Route; match: Route['name'][] }[] = [
   { label: 'Today', route: { name: 'today' }, match: ['today'] },
@@ -22,9 +22,7 @@ export function App() {
         {route.name === 'today' && <Today />}
         {route.name === 'session' && <Session />}
         {route.name === 'quick' && <Session quickId={route.id} />}
-        {route.name === 'progress' && (
-          <Placeholder title="Progress" body="Check-ins, pain trend and weekly sessions arrive in milestone 3." />
-        )}
+        {route.name === 'progress' && <Progress />}
         {route.name === 'library' && <Library />}
         {route.name === 'exercise' && <ExerciseDetail id={route.id} />}
         {route.name === 'equipment' && <Equipment />}

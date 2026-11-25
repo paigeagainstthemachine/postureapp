@@ -58,3 +58,31 @@ export function parseCount(c: number | string | undefined): { min: number; max: 
 export function sidesFor(rx: Prescription): (Side | undefined)[] {
   return rx.per_side ? ['right', 'left'] : [undefined]
 }
+
+/** Parse a YYYY-MM-DD key as a local date (noon, to dodge DST edges). */
+export function fromKey(key: string): Date {
+  const [y, m, d] = key.split('-').map(Number)
+  return new Date(y, m - 1, d, 12)
+}
+
+export function addDays(d: Date, n: number): Date {
+  const x = new Date(d)
+  x.setDate(x.getDate() + n)
+  return x
+}
+
+/** Monday of the week containing d. */
+export function weekStart(d: Date): Date {
+  const x = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 12)
+  return addDays(x, -((x.getDay() + 6) % 7))
+}
+
+/** "25.11" */
+export function shortDate(d: Date): string {
+  return `${String(d.getDate()).padStart(2, '0')}.${String(d.getMonth() + 1).padStart(2, '0')}`
+}
+
+/** Whole days from a to b. */
+export function daysBetween(a: Date, b: Date): number {
+  return Math.round((b.getTime() - a.getTime()) / 86400000)
+}

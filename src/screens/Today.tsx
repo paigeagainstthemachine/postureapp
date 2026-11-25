@@ -3,6 +3,7 @@ import { formatDose, getExercise, phase1, phaseLabel, type Exercise } from '../d
 import { dateKey, parseCount, planFor, sidesFor } from '../lib/plan'
 import { href } from '../router'
 import { unlockAudio } from '../lib/cues'
+import { CheckInCard } from '../components/CheckInCard'
 
 const QUICK_ID = 'chin_nod'
 
@@ -110,6 +111,8 @@ export function Today() {
       </ul>
 
       {allDone && <p className="all-done">All done for today. Nice work.</p>}
+
+      <CheckInCard date={today} />
 
       {quickEx && quickTarget > 0 && (
         <div className="quick">
