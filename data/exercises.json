@@ -1,0 +1,378 @@
+{
+  "version": 1,
+  "exercises": [
+    {
+      "id": "chin_nod",
+      "name": "Chin nods",
+      "figure": "assets/figures/chin_nod.svg",
+      "equipment": [
+        "chair"
+      ],
+      "position": "seated",
+      "steps": [
+        "Sit tall.",
+        "Glide your chin straight back as if making a double chin, eyes level.",
+        "Do not tip your head down.",
+        "Hold, then relax."
+      ],
+      "cue": "You should feel the front of your neck working, not the back tightening.",
+      "note": "Do these any time you notice your head creeping forward.",
+      "targets": "deep neck flexors",
+      "pregnancy_safe": true,
+      "side_specific": false,
+      "rx": {
+        "phase1": {
+          "sets": 1,
+          "reps": 10,
+          "hold_seconds": 5,
+          "times_per_day": 3,
+          "load": "none"
+        },
+        "phase2": {
+          "sets": 1,
+          "reps": 10,
+          "hold_seconds": 5,
+          "times_per_day": 1,
+          "load": "none"
+        }
+      }
+    },
+    {
+      "id": "band_row",
+      "name": "Seated band row",
+      "figure": "assets/figures/band_row.svg",
+      "equipment": [
+        "resistance band with handles",
+        "chair",
+        "anchor point (cage)"
+      ],
+      "position": "seated",
+      "steps": [
+        "Anchor the band at chest height in front of you.",
+        "Pull elbows back and slightly down and squeeze the shoulder blades.",
+        "Let the band pull your hands forward slowly.",
+        "Keep shoulders away from your ears."
+      ],
+      "cue": "Back and down, not back and up.",
+      "note": "If your traps take over, use a lighter band.",
+      "targets": "mid back, lower traps",
+      "pregnancy_safe": true,
+      "side_specific": false,
+      "rx": {
+        "phase1": {
+          "sets": 2,
+          "reps": 12,
+          "load": "light band"
+        }
+      }
+    },
+    {
+      "id": "pull_apart",
+      "name": "Band pull-apart",
+      "figure": "assets/figures/pull_apart.svg",
+      "equipment": [
+        "light resistance band"
+      ],
+      "position": "standing",
+      "steps": [
+        "Hold a light band at chest height, arms straight but soft at the elbow.",
+        "Pull the band apart by rotating your arms outward.",
+        "Squeeze the shoulder blades gently.",
+        "Stop when your hands are in line with your shoulders."
+      ],
+      "cue": "Rotate the arms outward.",
+      "note": "Do not go past the line of your shoulders. Hypermobile shoulders do not need extra range.",
+      "targets": "rear delts, rotator cuff, mid traps",
+      "pregnancy_safe": true,
+      "side_specific": false,
+      "rx": {
+        "phase1": {
+          "sets": 2,
+          "reps": "12-15",
+          "load": "very light band"
+        },
+        "phase2": {
+          "sets": 3,
+          "reps": 15,
+          "load": "light band"
+        }
+      }
+    },
+    {
+      "id": "wall_slide",
+      "name": "Wall slide with serratus push",
+      "figure": "assets/figures/wall_slide.svg",
+      "equipment": [
+        "wall"
+      ],
+      "position": "standing",
+      "steps": [
+        "Stand facing a wall with forearms on it.",
+        "Push the wall away so your shoulder blades wrap around your ribs.",
+        "Slide your forearms up as far as you can without your shoulders hiking up.",
+        "Slide back down slowly."
+      ],
+      "cue": "Keep shoulders low.",
+      "note": "Only go as high as you can keep your shoulders low.",
+      "targets": "serratus anterior, lower traps",
+      "pregnancy_safe": true,
+      "side_specific": false,
+      "rx": {
+        "phase1": {
+          "sets": 2,
+          "reps": 10,
+          "load": "bodyweight"
+        }
+      }
+    },
+    {
+      "id": "side_lying_er",
+      "name": "Side-lying external rotation",
+      "figure": "assets/figures/side_lying_er.svg",
+      "equipment": [
+        "light dumbbell or water bottle",
+        "towel roll",
+        "pillow",
+        "mat"
+      ],
+      "position": "left side-lying (phase 1)",
+      "steps": [
+        "Lie on your LEFT side with a pillow under your head and between your knees.",
+        "Rest the right elbow on a small rolled towel at your ribs, forearm across your belly.",
+        "Rotate the forearm up toward the ceiling slowly.",
+        "Lower for a count of 3."
+      ],
+      "cue": "Elbow stays pinned to the towel.",
+      "note": "Left side-lying is the comfortable side in late pregnancy. Right arm is the priority. Do the left arm too if you like.",
+      "targets": "rotator cuff (external rotators)",
+      "pregnancy_safe": true,
+      "side_specific": true,
+      "priority_side": "right",
+      "tempo": {
+        "lowering_seconds": 3
+      },
+      "rx": {
+        "phase1": {
+          "sets": 2,
+          "reps": 10,
+          "load": "1-2 lb"
+        },
+        "phase2": {
+          "sets": 3,
+          "reps": 12,
+          "load": "2-5 lb"
+        }
+      }
+    },
+    {
+      "id": "thoracic_ext",
+      "name": "Seated thoracic extension",
+      "figure": "assets/figures/thoracic_ext.svg",
+      "equipment": [
+        "chair with firm back"
+      ],
+      "position": "seated",
+      "steps": [
+        "Sit in a chair with a firm back at about shoulder-blade height.",
+        "Put your hands behind your head.",
+        "Gently lean back over the chair so the bend happens in your upper back.",
+        "Keep your ribs down. Come back up slowly."
+      ],
+      "cue": "Small, gentle bend is enough.",
+      "note": "Skip it if it pinches.",
+      "targets": "upper back mobility",
+      "pregnancy_safe": true,
+      "side_specific": false,
+      "rx": {
+        "phase1": {
+          "sets": 1,
+          "reps": 5,
+          "load": "none"
+        }
+      }
+    },
+    {
+      "id": "lacrosse_wall",
+      "name": "Lacrosse ball on the wall",
+      "figure": "assets/figures/lacrosse_wall.svg",
+      "equipment": [
+        "lacrosse ball",
+        "wall"
+      ],
+      "position": "standing",
+      "steps": [
+        "Place the ball between you and the wall.",
+        "Find the tight spot and lean in lightly.",
+        "Make tiny slow movements.",
+        "Breathe out as the spot softens."
+      ],
+      "cue": "Light pressure, about 4 out of 10.",
+      "note": "Never on the spine or the front or sides of the neck.",
+      "targets": "right upper trap near neck; between right shoulder blade and spine",
+      "pregnancy_safe": true,
+      "side_specific": true,
+      "priority_side": "right",
+      "spots": [
+        "top of right shoulder near neck",
+        "between right shoulder blade and spine"
+      ],
+      "rx": {
+        "phase1": {
+          "sets": 1,
+          "duration_seconds_per_spot": "60-120",
+          "load": "light pressure"
+        },
+        "phase2": {
+          "sets": 1,
+          "duration_seconds_per_spot": "60-120",
+          "load": "light pressure"
+        }
+      }
+    },
+    {
+      "id": "incline_row",
+      "name": "Incline chest-supported row",
+      "figure": "assets/figures/incline_row.svg",
+      "equipment": [
+        "adjustable bench at 30-45 degrees",
+        "dumbbells"
+      ],
+      "position": "face-down on incline bench",
+      "steps": [
+        "Set the bench to about 30 to 45 degrees.",
+        "Lie face-down with chest on the pad, head just above the top.",
+        "Let the dumbbells hang.",
+        "Row elbows up and back, squeeze shoulder blades, lower for 3 seconds."
+      ],
+      "cue": "Chest stays on the pad.",
+      "note": "The pad takes the lower back out so the work lands in the mid back.",
+      "targets": "mid back, rhomboids, lower traps",
+      "pregnancy_safe": false,
+      "side_specific": false,
+      "tempo": {
+        "lowering_seconds": 3
+      },
+      "rx": {
+        "phase2": {
+          "sets": 3,
+          "reps": "10-12",
+          "load": "3-5 lb each hand to start"
+        }
+      }
+    },
+    {
+      "id": "face_pull",
+      "name": "Band face pull",
+      "figure": "assets/figures/face_pull.svg",
+      "equipment": [
+        "resistance band",
+        "anchor at face height"
+      ],
+      "position": "standing",
+      "steps": [
+        "Anchor the band at about face height.",
+        "Pull the band toward your forehead, hands apart, elbows high.",
+        "Rotate forearms up and out at the end.",
+        "Pause 1 second, return slowly."
+      ],
+      "cue": "Do not lean back to cheat.",
+      "note": "Best single exercise for rounded shoulders.",
+      "targets": "rear delts, external rotators, lower traps",
+      "pregnancy_safe": true,
+      "side_specific": false,
+      "rx": {
+        "phase2": {
+          "sets": 3,
+          "reps": 15,
+          "load": "light to medium band"
+        }
+      }
+    },
+    {
+      "id": "plus_pushup",
+      "name": "Serratus wall push-up plus",
+      "figure": "assets/figures/plus_pushup.svg",
+      "equipment": [
+        "wall"
+      ],
+      "position": "standing, leaning on wall",
+      "steps": [
+        "Hands on a wall at shoulder height, body in a straight line.",
+        "Do a small push-up.",
+        "At the top push the wall away a little further so the shoulder blades spread around your ribs.",
+        "Hold 1 second."
+      ],
+      "cue": "Spread the shoulder blades at the top.",
+      "note": "Progress to a hands-on-bench version after a few weeks.",
+      "targets": "serratus anterior",
+      "pregnancy_safe": true,
+      "side_specific": false,
+      "rx": {
+        "phase2": {
+          "sets": 3,
+          "reps": 10,
+          "hold_seconds": 1,
+          "load": "bodyweight"
+        }
+      }
+    },
+    {
+      "id": "y_raise",
+      "name": "Incline Y raise",
+      "figure": "assets/figures/y_raise.svg",
+      "equipment": [
+        "adjustable bench at 30-45 degrees",
+        "1-3 lb dumbbells"
+      ],
+      "position": "face-down on incline bench",
+      "steps": [
+        "Same incline bench, chest on the pad.",
+        "Lift your arms out and up in a Y with thumbs up.",
+        "Lead with the lower traps, shoulder blades toward back pockets.",
+        "Lower slowly."
+      ],
+      "cue": "Start with no weight if your neck takes over.",
+      "note": "",
+      "targets": "lower traps",
+      "pregnancy_safe": false,
+      "side_specific": false,
+      "rx": {
+        "phase2": {
+          "sets": 2,
+          "reps": 10,
+          "load": "1-3 lb"
+        }
+      }
+    },
+    {
+      "id": "bird_dog",
+      "name": "Bird dog",
+      "figure": "assets/figures/bird_dog.svg",
+      "equipment": [
+        "mat"
+      ],
+      "position": "hands and knees",
+      "steps": [
+        "On hands and knees with a flat back.",
+        "Reach one arm forward and the opposite leg back.",
+        "Hold 2 seconds, then switch.",
+        "Keep hips level, do not let the low back arch."
+      ],
+      "cue": "Hips level.",
+      "note": "Good postpartum core and shoulder-stability combo.",
+      "targets": "core, shoulder stability",
+      "pregnancy_safe": false,
+      "side_specific": true,
+      "per_side": true,
+      "rx": {
+        "phase2": {
+          "sets": 2,
+          "reps": 8,
+          "hold_seconds": 2,
+          "load": "bodyweight",
+          "per_side": true
+        }
+      }
+    }
+  ]
+}

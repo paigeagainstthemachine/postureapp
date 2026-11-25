@@ -1,0 +1,64 @@
+{
+  "budget_usd": 500,
+  "note": "Prices approximate, checked 2026-11-25. Verify before buying.",
+  "items": [
+    {
+      "name": "Resistance band set with handles",
+      "approx_usd": "20-30",
+      "phase": 1,
+      "links": [
+        "https://walmart.com/ip/358251807",
+        "https://www.target.com/s/door+anchor+bands"
+      ]
+    },
+    {
+      "name": "Light dumbbells 2-10 lb",
+      "approx_usd": "60-120",
+      "phase": 1,
+      "links": [
+        "https://www.bestbuy.com/product/balancefrom-fitness-2-3-5-8-10-pound-neoprene-coated-dumbbell-set-with-rack-multi-color/J3GW3ZKPP9/sku/11630426"
+      ]
+    },
+    {
+      "name": "Adjustable incline bench (30-45 degrees)",
+      "approx_usd": "130-215",
+      "phase": 2,
+      "links": [
+        "https://www.dickssportinggoods.com/a/adjustable-incline-bench.html",
+        "https://titan.fitness/collections/adjustable-benches"
+      ]
+    },
+    {
+      "name": "Lacrosse ball",
+      "approx_usd": "5-10",
+      "phase": 1,
+      "links": [
+        "https://www.walmart.com/ip/50997669"
+      ]
+    },
+    {
+      "name": "10 mm exercise mat",
+      "approx_usd": "20-30",
+      "phase": 1,
+      "links": [
+        "https://www.walmart.com/ip/463365068"
+      ]
+    },
+    {
+      "name": "36 in foam roller (optional)",
+      "approx_usd": "12-25",
+      "phase": 2,
+      "links": [
+        "https://www.walmart.com/ip/3673956461"
+      ]
+    },
+    {
+      "name": "Mini loop bands (optional)",
+      "approx_usd": "9-23",
+      "phase": 2,
+      "links": [
+        "https://www.walmart.com/ip/SPRI-Mini-Loop-Bands-Kit-3-Pack/859190098"
+      ]
+    }
+  ]
+}

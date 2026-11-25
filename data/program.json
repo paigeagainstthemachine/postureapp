@@ -1,0 +1,129 @@
+{
+  "version": 1,
+  "phases": [
+    {
+      "id": "phase1",
+      "name": "Now until delivery",
+      "description": "About 10 minutes a day. Gentle, pregnancy-safe positions only.",
+      "ground_rules": [
+        "Stay upright, seated, standing, or on your left side. No lying flat on your back, nothing face-down.",
+        "Light effort only, about 5 out of 10.",
+        "Breathe out on the effort. No breath holding.",
+        "Skip deep stretching.",
+        "Stop and rest if dizzy, short of breath, sharp pain, or tingling or numbness in the arm."
+      ],
+      "daily_block": [
+        "chin_nod",
+        "band_row",
+        "pull_apart",
+        "wall_slide",
+        "side_lying_er",
+        "thoracic_ext"
+      ],
+      "extra_chin_nod_sessions_per_day": 3,
+      "schedule": {
+        "mon": [
+          "daily_block",
+          "lacrosse_wall"
+        ],
+        "tue": [
+          "daily_block"
+        ],
+        "wed": [
+          "daily_block",
+          "lacrosse_wall"
+        ],
+        "thu": [
+          "daily_block"
+        ],
+        "fri": [
+          "daily_block",
+          "lacrosse_wall"
+        ],
+        "sat": [
+          "daily_block"
+        ],
+        "sun": [
+          "daily_block",
+          "lacrosse_wall"
+        ]
+      },
+      "late_pregnancy_flag": "Worth a call the same day: a headache that is severe or new, will not ease with rest and fluids, or comes with vision changes, upper right belly pain, or sudden swelling."
+    },
+    {
+      "id": "phase2",
+      "name": "After you are cleared",
+      "description": "Strength building. Start once the provider clears exercise (commonly around 6 weeks postpartum). Do Phase 1 for the first week or two.",
+      "strength_day": [
+        "chin_nod",
+        "incline_row",
+        "face_pull",
+        "pull_apart",
+        "side_lying_er",
+        "plus_pushup",
+        "y_raise",
+        "bird_dog",
+        "lacrosse_wall"
+      ],
+      "warmup": "5 minutes of easy walking or arm circles",
+      "schedule": {
+        "mon": {
+          "type": "strength"
+        },
+        "tue": {
+          "type": "walk",
+          "items": [
+            "chin_nod",
+            "lacrosse_wall"
+          ],
+          "minutes": "15-20"
+        },
+        "wed": {
+          "type": "strength"
+        },
+        "thu": {
+          "type": "walk",
+          "items": [
+            "chin_nod"
+          ],
+          "minutes": "15-20"
+        },
+        "fri": {
+          "type": "strength"
+        },
+        "sat": {
+          "type": "optional_walk"
+        },
+        "sun": {
+          "type": "rest",
+          "items": [
+            "chin_nod"
+          ]
+        }
+      },
+      "progression": [
+        {
+          "weeks": "1-2",
+          "change": "2 sets of everything, lightest band, 1-3 lb. Stop 3-4 reps before it gets hard."
+        },
+        {
+          "weeks": "3-4",
+          "change": "3 sets as listed. Same weights. Last 2 reps should feel like work."
+        },
+        {
+          "weeks": "5-6",
+          "change": "Move up one band color or add 1-2 lb on rows and face pulls. Form first."
+        },
+        {
+          "weeks": "7-8",
+          "change": "Same load, slower tempo: 3 seconds lowering on every rep."
+        },
+        {
+          "weeks": "9-12",
+          "change": "One more step up in load every 2 weeks, only if shoulders and neck feel good."
+        }
+      ],
+      "flare_rule": "If neck or shoulder pain flares for more than a day, drop back one step for a week."
+    }
+  ]
+}
